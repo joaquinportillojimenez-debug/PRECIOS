@@ -1,6 +1,6 @@
 // Service worker: la app abre sin conexión con los últimos datos descargados.
 // Primero intenta la red (para ver siempre los datos nuevos) y, si no hay, usa la copia guardada.
-const CACHE = "precios-v4";
+const CACHE = "precios-v5";
 const CORE = ["./", "index.html", "manifest.webmanifest", "data.enc.json",
   "icons/apple-touch-icon.png", "icons/icon-192.png", "icons/icon-512.png",
   "fonts/barlow-latin-400-normal.woff2", "fonts/barlow-latin-500-normal.woff2", "fonts/barlow-latin-600-normal.woff2",

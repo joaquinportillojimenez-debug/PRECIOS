@@ -90,6 +90,15 @@ header.top .meta{color:var(--muted);font-size:.92rem;margin-top:8px}
 .pref input:focus{outline:2px solid var(--focus);border-radius:6px}
 .ghost{background:transparent;border:2px solid var(--rule);border-radius:10px;padding:8px 14px;cursor:pointer;color:var(--muted);font-weight:500;min-height:48px}
 .theme{display:inline-grid;place-items:center;width:48px;padding:0;color:var(--ink)}
+#prefsBtn{display:none}
+.prefrow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid var(--shelf)}
+.prefrow label{font-weight:600}
+.prefrow label small{display:block;font-weight:400;color:var(--muted);font-size:.85rem}
+.prefrow .in{display:flex;align-items:center;gap:6px}
+.prefrow .in > span{width:1.2em}
+.prefrow input{width:84px;padding:10px 12px;border:2px solid var(--rule);border-radius:10px;background:var(--tag);font:700 1.4rem var(--cond);text-align:right}
+.prefrow input:focus{border-color:var(--ink);outline:none}
+.sheet .ghost.wide{width:100%;margin-top:22px}
 .theme .ico{width:22px;height:22px}
 .lock .theme{position:fixed;top:calc(14px + env(safe-area-inset-top));right:calc(14px + env(safe-area-inset-right))}
 
@@ -116,14 +125,18 @@ section.cat h2 small{font:500 .95rem var(--body);color:var(--muted);align-self:f
 
 /* etiqueta de estantería */
 .tag{
-  display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:14px;align-items:start;text-align:left;border:0;cursor:pointer;
+  display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"info sticker" "buy sticker";
+  column-gap:14px;align-items:start;text-align:left;border:0;cursor:pointer;
   background:var(--tag);border-radius:6px;padding:14px 14px 14px 16px;border-top:4px solid var(--ink);
 }
+.tag .info{grid-area:info}
+.tag > .sticker{grid-area:sticker}
+.tag > .buy{grid-area:buy}
 .tag:active{transform:scale(.99)}
 .tag .info{display:flex;flex-direction:column;gap:4px;min-width:0}
 .tag .name{font:600 1.35rem/1.1 var(--cond)}
 .tag .n{color:var(--muted);font-size:.85rem}
-.tag .buy{margin-top:10px}
+.tag > .buy{margin-top:10px}
 .tag .asks{color:var(--muted);font-size:.85rem;margin-top:4px}
 
 /* pegatina amarilla = precio de venta */
@@ -139,6 +152,7 @@ section.cat h2 small{font:500 .95rem var(--body);color:var(--muted);align-self:f
 
 /* precio de compra, secundario */
 .buy{text-align:left}
+.buy .bl{display:block}
 .buy .lbl{display:block;color:var(--muted);font-size:.8rem}
 .buy b{font:700 1.55rem/1.05 var(--cond)}
 .buy .roi{display:block;color:var(--muted);font-size:.8rem;margin-top:2px}
@@ -210,10 +224,40 @@ dialog::backdrop{background:rgba(8,12,18,.45)}
 .sales th.p{text-align:right;padding-right:0}
 .sales .note{display:block;color:var(--muted);font-size:.85rem}
 
-@media (max-width:520px){
-  .wrap{padding:12px 14px 56px}
-  .grid{grid-template-columns:1fr}
-  .sticker b{font-size:2.3rem}
+@media (max-width:600px){
+  .wrap{padding:14px 16px 64px}
+  header.top{flex-wrap:nowrap;align-items:flex-start;margin:2px 0 6px}
+  header.top h1{font-size:2.6rem}
+  header.top .meta{font-size:.85rem;margin-top:10px}
+  .brand{gap:11px}
+  .logo{width:44px;height:44px;border-radius:11px}
+  .tools{flex-wrap:nowrap;gap:8px}
+  .tools .pref, #lockBtn{display:none}
+  #prefsBtn{display:inline-grid}
+  .searchbar{padding:12px 0 12px}
+  .search input{padding:14px 44px 14px 46px;font-size:1.05rem}
+  .search > .ico{left:15px;width:20px;height:20px}
+  .chips{padding-top:14px}
+  section.cat{margin-top:36px}
+  section.cat h2{font-size:1.8rem;margin-bottom:14px}
+  .grid{grid-template-columns:1fr;gap:14px}
+  .tag{grid-template-areas:"info sticker" "buy buy";padding:16px 16px 14px 18px;border-radius:8px}
+  .tag .info{gap:6px;padding-top:2px}
+  .tag .name{font-size:1.4rem}
+  .tag > .sticker{min-width:120px;padding:8px 14px 8px 24px}
+  .tag > .sticker b{font-size:2.1rem}
+  .tag > .buy{display:flex;align-items:baseline;justify-content:space-between;gap:6px 12px;flex-wrap:wrap;
+    margin-top:16px;padding-top:12px;border-top:1px solid var(--rule)}
+  .tag > .buy .bl{display:flex;align-items:baseline;gap:8px}
+  .tag > .buy .lbl{font-size:.85rem}
+  .tag > .buy b{font-size:1.45rem}
+  .tag > .buy .roi{margin:0}
+  .tag > .buy.none b{font-size:1.05rem}
+  .tag .asks{margin-top:0}
+  .sheet{padding:22px 20px calc(30px + env(safe-area-inset-bottom))}
+  .pair .sticker{min-width:150px}
+  .pair .sticker b{font-size:2.9rem}
+  footer{margin-top:48px}
 }
 </style>
 </head>
@@ -241,8 +285,9 @@ dialog::backdrop{background:rgba(8,12,18,.45)}
       <div class="meta" id="meta"></div>
     </div>
     <div class="tools">
-      <div class="pref"><label for="gain">Ganar mínimo</label><input id="gain" class="num" type="number" inputmode="numeric" min="0" step="5"><span>€</span></div>
-      <div class="pref"><label for="roi">ROI mínimo</label><input id="roi" class="num" type="number" inputmode="numeric" min="0" step="5"><span>%</span></div>
+      <div class="pref"><label for="gain">Ganar mínimo</label><input id="gain" data-pref="gain" class="num" type="number" inputmode="numeric" min="0" step="5"><span>€</span></div>
+      <div class="pref"><label for="roi">ROI mínimo</label><input id="roi" data-pref="roi" class="num" type="number" inputmode="numeric" min="0" step="5"><span>%</span></div>
+      <button class="ghost theme" id="prefsBtn" type="button" aria-label="Ajustes" title="Ajustes"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg></button>
       <button class="ghost theme" id="themeBtn" type="button"></button>
       <button class="ghost" id="lockBtn" type="button">Bloquear</button>
     </div>
@@ -262,6 +307,16 @@ dialog::backdrop{background:rgba(8,12,18,.45)}
 </div>
 
 <dialog id="detail" aria-labelledby="dName"><div class="sheet" id="sheet"></div></dialog>
+
+<dialog id="prefsDlg" aria-labelledby="pTitle"><div class="sheet">
+  <div class="head"><div><p>Para calcular a cuánto comprar</p><h2 id="pTitle">Ajustes</h2></div>
+    <button class="close" type="button" id="pClose" aria-label="Cerrar">×</button></div>
+  <div class="prefrow"><label for="gainM">Ganar mínimo<small>Lo mínimo que quieres sacar por unidad</small></label>
+    <span class="in"><input id="gainM" data-pref="gain" class="num" type="number" inputmode="numeric" min="0" step="5"><span>€</span></span></div>
+  <div class="prefrow"><label for="roiM">ROI mínimo<small>Lo que ganas respecto a lo que pagas</small></label>
+    <span class="in"><input id="roiM" data-pref="roi" class="num" type="number" inputmode="numeric" min="0" step="5"><span>%</span></span></div>
+  <button class="ghost wide" id="lockBtnM" type="button">Bloquear la app</button>
+</div></dialog>
 
 <script>
 "use strict";
@@ -376,9 +431,9 @@ function renderChips(){
     `<button class="chip" type="button" data-cat="${c.id}" aria-pressed="${state.cat===c.id}">${c.id === "all" ? "" : icon(c)}${esc(c.name)}<span class="c">${c.c}</span></button>`).join("");
 }
 function buyHTML(b){
-  if(!b) return `<span class="buy none"><span class="lbl">Comprar hasta</span><b>Sin ventas aún</b></span>`;
-  if(b.none) return `<span class="buy none"><span class="lbl">Comprar hasta</span><b>No compensa</b></span>`;
-  return `<span class="buy"><span class="lbl">Comprar hasta</span><b class="num">${eur(b.buy)}</b><span class="roi">ganas ${eur(b.gain)}, ROI ${pct(b.roi)}</span></span>`;
+  if(!b) return `<span class="buy none"><span class="bl"><span class="lbl">Comprar hasta</span><b>Sin ventas aún</b></span></span>`;
+  if(b.none) return `<span class="buy none"><span class="bl"><span class="lbl">Comprar hasta</span><b>No compensa</b></span></span>`;
+  return `<span class="buy"><span class="bl"><span class="lbl">Comprar hasta</span><b class="num">${eur(b.buy)}</b></span><span class="roi">ganas ${eur(b.gain)}, ROI ${pct(b.roi)}</span></span>`;
 }
 function tagHTML(p){
   const hasSales = p.n > 0;
@@ -390,8 +445,9 @@ function tagHTML(p){
     ? `<span class="asks">${p.asks.length === 1 ? `Piden ${eur(p.askMin)}` : `Piden de ${eur(p.askMin)} a ${eur(p.askMax)}`}</span>` : "";
   const sub = hasSales ? range : `${p.asks.length} ${p.asks.length === 1 ? "precio pedido" : "precios pedidos"}, sin ventas`;
   return `<button class="tag" type="button" data-id="${p.id}">
-    <span class="info"><span class="name">${esc(p.name)}</span><span class="n">${sub}</span>${buyHTML(buyInfo(p.med))}${asks}</span>
+    <span class="info"><span class="name">${esc(p.name)}</span><span class="n">${sub}</span>${asks}</span>
     ${sticker}
+    ${buyHTML(buyInfo(p.med))}
   </button>`;
 }
 function render(){
@@ -506,14 +562,22 @@ function wire(){
   });
   $("#clear").onclick = () => { $("#q").value = ""; state.q = ""; $("#clear").hidden = true; render(); $("#q").focus(); };
   $("#list").addEventListener("click", e => { const t = e.target.closest(".tag"); if(t) openDetail(t.dataset.id); });
-  [["gain","precios.ganancia"],["roi","precios.roi"]].forEach(([k, key]) => {
-    const el = $("#" + k); el.value = state[k];
+  const PREF_KEYS = {gain:"precios.ganancia", roi:"precios.roi"};
+  document.querySelectorAll("[data-pref]").forEach(el => {
+    const k = el.dataset.pref; el.value = state[k];
     el.addEventListener("input", () => {
       const v = parseInt(el.value, 10); if(isNaN(v) || v < 0) return;
-      state[k] = v; LS.set(key, String(v)); render(); renderMeta();
+      state[k] = v; LS.set(PREF_KEYS[k], String(v));
+      document.querySelectorAll(`[data-pref="${k}"]`).forEach(o => { if(o !== el) o.value = v; });
+      render(); renderMeta();
       if($("#detail").open && state.open) openDetail(state.open);
     });
   });
+  $("#prefsBtn").onclick = () => $("#prefsDlg").showModal();
+  $("#pClose").onclick = () => $("#prefsDlg").close();
+  $("#prefsDlg").addEventListener("click", e => { if(e.target === $("#prefsDlg")) $("#prefsDlg").close(); });
+  $("#lockBtnM").onclick = () => { LS.del("precios.key"); location.reload(); };
+  if(window.matchMedia && matchMedia("(max-width:600px)").matches) $("#q").placeholder = "Busca: ps5 slim, iphone 13…";
   $("#detail").addEventListener("click", e => { if(e.target === $("#detail")) $("#detail").close(); });
   $("#lockBtn").onclick = () => { LS.del("precios.key"); location.reload(); };
 }
