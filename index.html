@@ -336,7 +336,7 @@ const MESES = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov"
 const fdate = iso => { if(!iso) return null; const [y,m,d] = iso.split("-").map(Number); return `${d} ${MESES[m-1]} ${y}`; };
 const fdateLong = iso => { const [y,m,d] = iso.split("-").map(Number);
   return `${d} de ${["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"][m-1]} de ${y}`; };
-const SRC = {lista:"Lista", ventas:"Grupo de ventas", compras:"Grupo de compras", whatsapp:"WhatsApp"};
+const SRC = {lista:"Tu lista", ventas:"Grupo de ventas", wins:"Grupo de Wins", compras:"Grupo de compras", whatsapp:"WhatsApp"};
 
 /* Pictogramas por categoría (24×24, trazo) */
 const ICONS = {
@@ -349,6 +349,9 @@ const ICONS = {
   dji: '<rect x="9" y="10" width="6" height="11.5" rx="2"/><circle cx="12" cy="6" r="3.5"/><circle cx="12" cy="6" r="1.2"/>',
   quest: '<rect x="2.5" y="7.5" width="19" height="10" rx="4.5"/><path d="M10 17.5c.6-1.6 1.2-2.2 2-2.2s1.4.6 2 2.2"/>',
   rayban: '<rect x="2" y="9" width="8.5" height="6.5" rx="2.6"/><rect x="13.5" y="9" width="8.5" height="6.5" rx="2.6"/><path d="M10.5 11.4c1-.9 2-.9 3 0M2 10.6 1 8.2M22 10.6l1-2.4"/>',
+  juegos: '<path d="M7 3h10v12.5l-2 2V21H9v-3.5l-2-2z"/><path d="M10 7h4M10 10h4"/>',
+  retro: '<rect x="6" y="2.5" width="12" height="19" rx="2"/><rect x="8.5" y="5" width="7" height="6" rx=".8"/><path d="M8.8 16h3M10.3 14.5v3"/><circle cx="15" cy="15.2" r=".9" fill="currentColor" stroke="none"/>',
+  zapatillas: '<path d="M2.5 16V10.5l3.5-1 2.2 2.8c2.2.5 4.3.2 6.3-.6l2 1.6 4 1.1c1.2.3 2 1.3 2 2.5v.1z"/><path d="M2.5 19h19"/><path d="M9.5 12.5l1-1.5M12 12.8l1-1.6"/>',
   _: '<path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/>'
 };
 const icon = c => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${ICONS[(c && (c.icon || c.id))] || ICONS._}</svg>`;
