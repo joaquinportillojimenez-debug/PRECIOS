@@ -5,8 +5,9 @@ Los datos en claro (ventas.json) NUNCA se suben al repositorio: solo se sube
 data.enc.json, cifrado con AES-GCM y una clave derivada de la contraseña con
 PBKDF2-SHA256. La web descifra en el navegador con WebCrypto.
 
-Cada entrada de "sales" es una venta cerrada, o un precio pedido si lleva
-"kind": "pide" (grupo de compras); los pedidos no cuentan para la mediana.
+Cada entrada de "sales" es una venta cerrada, o una venta esperada si lleva
+"kind": "esperada" (lo que espera sacarle quien acaba de comprarlo, con "buy"
+= lo que pagó); las esperadas no cuentan para la mediana de venta.
 
 Uso:
   PRECIOS_PASS='...' python3 tools/precios.py check   ventas.json
@@ -58,7 +59,7 @@ def check(data):
     for i, s in enumerate(data["sales"]):
         assert s["p"] in prods, f"venta {i}: producto desconocido {s['p']}"
         assert isinstance(s["price"], (int, float)) and s["price"] > 0, f"venta {i}: precio raro"
-        assert s.get("kind", "venta") in ("venta", "pide"), f"venta {i}: tipo raro {s.get('kind')}"
+        assert s.get("kind", "venta") in ("venta", "esperada"), f"venta {i}: tipo raro {s.get('kind')}"
         used.add(s["p"])
     unused = [p for p in prods if p not in used]
     print(f"OK: {len(data['cats'])} categorías, {len(prods)} productos, {len(data['sales'])} ventas")

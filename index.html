@@ -222,7 +222,7 @@ dialog::backdrop{background:rgba(8,12,18,.45)}
 .sales td{padding:10px 8px 10px 0;border-bottom:1px solid var(--shelf);vertical-align:top}
 .sales td.p{font:700 1.15rem var(--cond);text-align:right;white-space:nowrap;padding-right:0}
 .sales th.p{text-align:right;padding-right:0}
-.sales .note{display:block;color:var(--muted);font-size:.85rem}
+.sales .note{display:block;color:var(--muted);font-size:.85rem;max-width:34ch}
 
 @media (max-width:600px){
   .wrap{padding:14px 16px 64px}
@@ -348,6 +348,7 @@ const ICONS = {
   garmin: '<circle cx="12" cy="12" r="5.5"/><path d="M9.2 7.2 9.8 2.5h4.4l.6 4.7M9.2 16.8l.6 4.7h4.4l.6-4.7"/><path d="M17.5 12h1.3"/>',
   dji: '<rect x="9" y="10" width="6" height="11.5" rx="2"/><circle cx="12" cy="6" r="3.5"/><circle cx="12" cy="6" r="1.2"/>',
   quest: '<rect x="2.5" y="7.5" width="19" height="10" rx="4.5"/><path d="M10 17.5c.6-1.6 1.2-2.2 2-2.2s1.4.6 2 2.2"/>',
+  rayban: '<rect x="2" y="9" width="8.5" height="6.5" rx="2.6"/><rect x="13.5" y="9" width="8.5" height="6.5" rx="2.6"/><path d="M10.5 11.4c1-.9 2-.9 3 0M2 10.6 1 8.2M22 10.6l1-2.4"/>',
   _: '<path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/>'
 };
 const icon = c => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${ICONS[(c && (c.icon || c.id))] || ICONS._}</svg>`;
@@ -385,21 +386,23 @@ async function tryStoredKey(){
 
 /* ---------- datos ---------- */
 function median(a){ const s=[...a].sort((x,y)=>x-y), m=s.length>>1; return s.length%2 ? s[m] : (s[m-1]+s[m])/2; }
-const isAsk = s => s.kind === "pide";
+const isExp = s => s.kind === "esperada" || s.kind === "pide";
 function build(){
   CATS = DATA.cats;
   const byP = {};
   DATA.sales.forEach((s,i) => (byP[s.p] = byP[s.p] || []).push({...s, i}));
   PRODUCTS = DATA.products.filter(p => byP[p.id]).map(p => {
     const all = byP[p.id].sort((a,b) => (b.date||"").localeCompare(a.date||"") || b.i - a.i);
-    const sales = all.filter(s => !isAsk(s)), asks = all.filter(isAsk);
-    const sp = sales.map(s => s.price), ap = asks.map(s => s.price);
+    const sales = all.filter(s => !isExp(s)), exps = all.filter(isExp);
+    const sp = sales.map(s => s.price), ep = exps.map(s => s.price);
     const dates = sales.map(s => s.date).filter(Boolean).sort();
     const cat = CATS.find(c => c.id === p.cat);
     const hay = norm([p.name, cat ? cat.name : "", ...(p.alias||[])].join(" "));
-    return { ...p, cat_: cat, sales, asks, n: sales.length,
-      med: sp.length ? median(sp) : null, min: sp.length ? Math.min(...sp) : null, max: sp.length ? Math.max(...sp) : null,
-      askMed: ap.length ? median(ap) : null, askMin: ap.length ? Math.min(...ap) : null, askMax: ap.length ? Math.max(...ap) : null,
+    const med = sp.length ? median(sp) : null, expMed = ep.length ? median(ep) : null;
+    return { ...p, cat_: cat, sales, exps, n: sales.length,
+      med, min: sp.length ? Math.min(...sp) : null, max: sp.length ? Math.max(...sp) : null,
+      expMed, expMin: ep.length ? Math.min(...ep) : null, expMax: ep.length ? Math.max(...ep) : null,
+      ref: med != null ? med : expMed, refIsExp: med == null,
       last: dates.length ? dates[dates.length-1] : null, hay, hayTight: hay.replace(/\s+/g,"") };
   });
 }
@@ -420,34 +423,37 @@ function matches(p){
 }
 const collator = new Intl.Collator("es", {numeric:true, sensitivity:"base"});
 const ventas = n => `${n} ${n === 1 ? "venta" : "ventas"}`;
+const esperadas = n => `${n} ${n === 1 ? "esperada" : "esperadas"}`;
+const countTxt = (v, e) => [v ? ventas(v) : "", e ? esperadas(e) : ""].filter(Boolean).join(", ") || "sin datos";
 
 /* ---------- pintar ---------- */
 function renderChips(){
-  const counts = {};
-  PRODUCTS.forEach(p => counts[p.cat] = (counts[p.cat]||0) + p.n + p.asks.length);
-  const nSales = DATA.sales.filter(s => !isAsk(s)).length;
-  const all = [{id:"all", name:"Todo", c:nSales}, ...CATS.filter(c => counts[c.id]).map(c => ({...c, c:PRODUCTS.filter(p => p.cat === c.id).reduce((t,p) => t + p.n, 0)}))];
+  const tot = {};
+  PRODUCTS.forEach(p => tot[p.cat] = (tot[p.cat]||0) + p.n + p.exps.length);
+  const all = [{id:"all", name:"Todo", c:DATA.sales.length}, ...CATS.filter(c => tot[c.id]).map(c => ({...c, c:tot[c.id]}))];
   $("#chips").innerHTML = all.map(c =>
     `<button class="chip" type="button" data-cat="${c.id}" aria-pressed="${state.cat===c.id}">${c.id === "all" ? "" : icon(c)}${esc(c.name)}<span class="c">${c.c}</span></button>`).join("");
 }
-function buyHTML(b){
-  if(!b) return `<span class="buy none"><span class="bl"><span class="lbl">Comprar hasta</span><b>Sin ventas aún</b></span></span>`;
+function buyHTML(b, est){
+  if(!b) return `<span class="buy none"><span class="bl"><span class="lbl">Comprar hasta</span><b>Sin datos</b></span></span>`;
   if(b.none) return `<span class="buy none"><span class="bl"><span class="lbl">Comprar hasta</span><b>No compensa</b></span></span>`;
-  return `<span class="buy"><span class="bl"><span class="lbl">Comprar hasta</span><b class="num">${eur(b.buy)}</b></span><span class="roi">ganas ${eur(b.gain)}, ROI ${pct(b.roi)}</span></span>`;
+  return `<span class="buy"><span class="bl"><span class="lbl">Comprar hasta</span><b class="num">${eur(b.buy)}</b></span><span class="roi">ganas ${eur(b.gain)}, ROI ${pct(b.roi)}${est ? ", según venta esperada" : ""}</span></span>`;
+}
+function stickerHTML(p, tag){
+  return p.n
+    ? `<${tag} class="sticker"><span class="lbl">Se vende</span><b class="num">${eur(p.med)}</b></${tag}>`
+    : `<${tag} class="sticker ask"><span class="lbl">Venta esperada</span><b class="num">${eur(p.expMed)}</b></${tag}>`;
 }
 function tagHTML(p){
-  const hasSales = p.n > 0;
-  const range = !hasSales ? "" : p.n === 1 ? "1 venta" : p.min === p.max ? `${p.n} ventas, todas a ${eur(p.min)}` : `${p.n} ventas, de ${eur(p.min)} a ${eur(p.max)}`;
-  const sticker = hasSales
-    ? `<span class="sticker"><span class="lbl">Se vende</span><b class="num">${eur(p.med)}</b></span>`
-    : `<span class="sticker ask"><span class="lbl">Piden</span><b class="num">${eur(p.askMed)}</b></span>`;
-  const asks = p.asks.length && hasSales
-    ? `<span class="asks">${p.asks.length === 1 ? `Piden ${eur(p.askMin)}` : `Piden de ${eur(p.askMin)} a ${eur(p.askMax)}`}</span>` : "";
-  const sub = hasSales ? range : `${p.asks.length} ${p.asks.length === 1 ? "precio pedido" : "precios pedidos"}, sin ventas`;
+  const sub = p.n
+    ? (p.n === 1 ? "1 venta" : p.min === p.max ? `${p.n} ventas, todas a ${eur(p.min)}` : `${p.n} ventas, de ${eur(p.min)} a ${eur(p.max)}`)
+    : `Sin ventas aún, ${p.exps.length} ${p.exps.length === 1 ? "venta esperada" : "ventas esperadas"}`;
+  const exps = p.exps.length && p.n
+    ? `<span class="asks">${p.exps.length === 1 ? `Venta esperada ${eur(p.expMin)}` : p.expMin === p.expMax ? `${p.exps.length} ventas esperadas a ${eur(p.expMin)}` : `${p.exps.length} ventas esperadas, de ${eur(p.expMin)} a ${eur(p.expMax)}`}</span>` : "";
   return `<button class="tag" type="button" data-id="${p.id}">
-    <span class="info"><span class="name">${esc(p.name)}</span><span class="n">${sub}</span>${asks}</span>
-    ${sticker}
-    ${buyHTML(buyInfo(p.med))}
+    <span class="info"><span class="name">${esc(p.name)}</span><span class="n">${sub}</span>${exps}</span>
+    ${stickerHTML(p, "span")}
+    ${buyHTML(buyInfo(p.ref), p.refIsExp)}
   </button>`;
 }
 function render(){
@@ -461,26 +467,26 @@ function render(){
   list.innerHTML = CATS.map(c => {
     const ps = shown.filter(p => p.cat === c.id).sort((a,b) => collator.compare(a.name, b.name));
     if(!ps.length) return "";
-    const n = ps.reduce((t,p) => t + p.n, 0);
-    return `<section class="cat" id="cat-${c.id}"><h2>${icon(c)}${esc(c.name)}<small>${ventas(n)}</small></h2>
+    const v = ps.reduce((t,p) => t + p.n, 0), e = ps.reduce((t,p) => t + p.exps.length, 0);
+    return `<section class="cat" id="cat-${c.id}"><h2>${icon(c)}${esc(c.name)}<small>${countTxt(v, e)}</small></h2>
       <div class="grid">${ps.map(tagHTML).join("")}</div></section>`;
   }).join("");
 }
 function renderMeta(){
-  const n = DATA.sales.filter(s => !isAsk(s)).length;
-  $("#meta").textContent = `${ventas(n)}, actualizado el ${fdateLong(DATA.updated)}`;
-  $("#foot").innerHTML = `<p>“Se vende” es la mediana de lo que se ha vendido en la comunidad. Los precios que piden en el grupo de compras salen aparte y no cuentan para ese precio.</p>
+  const v = DATA.sales.filter(s => !isExp(s)).length, e = DATA.sales.length - v;
+  $("#meta").textContent = `${ventas(v)} y ${e} ${e === 1 ? "venta esperada" : "ventas esperadas"}, actualizado el ${fdateLong(DATA.updated)}`;
+  $("#foot").innerHTML = `<p>“Se vende” es la mediana de lo que se ha vendido de verdad en la comunidad. Las ventas esperadas (lo que alguien que acaba de comprarlo espera sacarle) salen aparte y no cuentan para ese precio; solo se usan cuando todavía no hay ventas.</p>
     <p>“Comprar hasta” es lo máximo que puedes pagar para ganar al menos ${eur(state.gain)} y un ROI del ${pct(state.roi)} a la vez.</p>`;
 }
 
 function stripSVG(p){
-  const pts = [...p.sales.map(s => ({...s, ask:false})), ...p.asks.map(s => ({...s, ask:true}))];
+  const pts = [...p.sales.map(s => ({...s, e:false})), ...p.exps.map(s => ({...s, e:true}))];
   const prices = pts.map(s => s.price);
   const lo = Math.min(...prices), hi = Math.max(...prices);
   if(pts.length < 2 || lo === hi) return "";
   const W = 420, padL = 14, padR = 14, y = 26, span = hi - lo;
   const x = v => padL + (v - lo) / span * (W - padL - padR);
-  const dots = pts.map(s => `<circle class="dot${s.ask ? " ask" : ""}" cx="${x(s.price).toFixed(1)}" cy="${y}" r="7"><title>${s.ask ? "Piden" : "Vendido"} ${eur(s.price)}${s.date ? ", " + fdate(s.date) : ""}</title></circle>`).join("");
+  const dots = pts.map(s => `<circle class="dot${s.e ? " ask" : ""}" cx="${x(s.price).toFixed(1)}" cy="${y}" r="7"><title>${s.e ? "Venta esperada" : "Vendido"} ${eur(s.price)}${s.date ? ", " + fdate(s.date) : ""}</title></circle>`).join("");
   const med = p.med != null && p.n >= 2 ? x(p.med) : null;
   return `<div class="strip"><svg viewBox="0 0 ${W} 64" role="img" aria-label="Precios de ${eur(lo)} a ${eur(hi)}">
     <line class="axis" x1="${padL}" x2="${W-padR}" y1="${y}" y2="${y}"/>
@@ -489,60 +495,64 @@ function stripSVG(p){
     <text x="${padL}" y="${y+34}">${eur(lo)}</text>
     <text x="${W-padR}" y="${y+34}" text-anchor="end">${eur(hi)}</text>
     ${med != null ? `<text class="medl" x="${Math.min(Math.max(med, padL+60), W-padR-60)}" y="${y-20}" text-anchor="middle">mediana ${eur(p.med)}</text>` : ""}
-  </svg>${p.asks.length ? `<div class="legend"><span><i></i>Vendido</span><span><i class="ask"></i>Piden</span></div>` : ""}</div>`;
+  </svg>${p.exps.length && p.n ? `<div class="legend"><span><i></i>Vendido</span><span><i class="ask"></i>Venta esperada</span></div>` : ""}</div>`;
 }
-function rowsHTML(list){
-  return list.map(s => `<tr><td>${s.date ? fdate(s.date) : "Sin fecha"}</td>
-      <td>${SRC[s.src] || esc(s.src||"")}${s.note ? `<span class="note">${esc(s.note)}</span>` : ""}</td>
-      <td class="p num">${eur(s.price)}</td></tr>`).join("");
+const fd = s => s.date ? fdate(s.date) : "Sin fecha";
+const noteHTML = s => {
+  const bits = [SRC[s.src] || esc(s.src || "")];
+  if(s.buy != null && !isExp(s)) bits.push(`compró a ${eur(s.buy)}`);
+  return `${bits.join(", ")}${s.note ? `<span class="note">${esc(s.note)}</span>` : ""}`;
+};
+function salesTable(list){
+  return `<table><thead><tr><th>Fecha</th><th>Origen</th><th class="p">Precio</th></tr></thead><tbody>${
+    list.map(s => `<tr><td>${fd(s)}</td><td>${noteHTML(s)}</td><td class="p num">${eur(s.price)}</td></tr>`).join("")}</tbody></table>`;
+}
+function expsTable(list){
+  return `<table><thead><tr><th>Fecha</th><th class="p">Compra</th><th class="p">Esperada</th></tr></thead><tbody>${
+    list.map(s => `<tr><td>${fd(s)}${s.note ? `<span class="note">${esc(s.note)}</span>` : ""}</td>
+      <td class="p num">${s.buy != null ? eur(s.buy) : "–"}</td><td class="p num">${eur(s.price)}</td></tr>`).join("")}</tbody></table>`;
 }
 function openDetail(id){
   const p = PRODUCTS.find(x => x.id === id); if(!p) return;
   state.open = id;
-  const b = buyInfo(p.med);
+  const b = buyInfo(p.ref);
   let hint;
-  if(!p.n) hint = "Todavía no hay ventas cerradas de este producto, solo lo que piden en el grupo de compras.";
-  else {
-    hint = p.n === 1 ? "Solo hay una venta: tómalo como orientativo." : p.n === 2 ? "Con dos ventas, la mediana es la media de las dos." : `Mediana de ${p.n} ventas.`;
-    if(b && b.none) hint += ` Para ganar tus ${eur(state.gain)} tendrías que comprarlo casi regalado, por eso sale “No compensa”.`;
-    if(b && !b.none) hint += b.limit === "gain" ? ` El tope de compra lo marca tu ganancia mínima de ${eur(state.gain)}.` : ` El tope de compra lo marca tu ROI mínimo del ${pct(state.roi)}.`;
-  }
-  const sticker = p.n
-    ? `<div class="sticker"><span class="lbl">Se vende</span><b class="num">${eur(p.med)}</b></div>`
-    : `<div class="sticker ask"><span class="lbl">Piden</span><b class="num">${eur(p.askMed)}</b></div>`;
+  if(!p.n) hint = `Todavía no hay ventas cerradas. El precio es la mediana de ${p.exps.length === 1 ? "la venta esperada" : `las ${p.exps.length} ventas esperadas`}: tómalo como orientativo.`;
+  else hint = p.n === 1 ? "Solo hay una venta: tómalo como orientativo." : p.n === 2 ? "Con dos ventas, la mediana es la media de las dos." : `Mediana de ${p.n} ventas.`;
+  if(b && b.none) hint += ` Para ganar tus ${eur(state.gain)} tendrías que comprarlo casi regalado, por eso sale “No compensa”.`;
+  else if(b) hint += b.limit === "gain" ? ` El tope de compra lo marca tu ganancia mínima de ${eur(state.gain)}.` : ` El tope de compra lo marca tu ROI mínimo del ${pct(state.roi)}.`;
   $("#sheet").innerHTML = `
     <div class="head"><div><p>${icon(p.cat_)}${esc(p.cat_ ? p.cat_.name : "")}</p><h2 id="dName">${esc(p.name)}</h2></div>
       <button class="close" type="button" id="dClose" aria-label="Cerrar">×</button></div>
-    <div class="pair">${buyHTML(b)}${sticker}</div>
+    <div class="pair">${buyHTML(b, p.refIsExp)}${stickerHTML(p, "div")}</div>
     <p class="hint">${hint}</p>
     ${stripSVG(p)}
-    ${p.n ? `<div class="calc">
+    <div class="calc">
       <label for="offer">¿Te lo ofrecen? Pon el precio</label>
       <div class="row"><input id="offer" class="num" type="number" inputmode="numeric" min="0" placeholder="0"><span>€</span></div>
       <div id="verdict" aria-live="polite"></div>
-    </div>` : ""}
-    ${p.n ? `<div class="sales"><h3>${p.n === 1 ? "La venta" : `Las ${p.n} ventas`}</h3>
-      <table><thead><tr><th>Fecha</th><th>Origen</th><th class="p">Precio</th></tr></thead><tbody>${rowsHTML(p.sales)}</tbody></table></div>` : ""}
-    ${p.asks.length ? `<div class="sales"><h3>Lo que piden<small>no cuenta para “se vende”</small></h3>
-      <table><thead><tr><th>Fecha</th><th>Origen</th><th class="p">Precio</th></tr></thead><tbody>${rowsHTML(p.asks)}</tbody></table></div>` : ""}`;
+    </div>
+    ${p.n ? `<div class="sales"><h3>${p.n === 1 ? "La venta" : `Las ${p.n} ventas`}</h3>${salesTable(p.sales)}</div>` : ""}
+    ${p.exps.length ? `<div class="sales"><h3>${p.exps.length === 1 ? "Venta esperada" : `${p.exps.length} ventas esperadas`}<small>lo que esperan sacarle quienes lo han comprado</small></h3>${expsTable(p.exps)}</div>` : ""}`;
   $("#dClose").onclick = () => $("#detail").close();
-  const off = $("#offer"); if(off) off.oninput = e => verdict(p, e.target.value);
+  $("#offer").oninput = e => verdict(p, e.target.value);
   const d = $("#detail");
   if(!d.open) d.showModal();
 }
 function verdict(p, v){
   const el = $("#verdict"), offer = parseFloat(v);
   if(!v || isNaN(offer) || offer <= 0){ el.innerHTML = ""; return; }
-  const gain = p.med - offer, roi = gain / offer * 100;
+  const sell = p.ref, gain = sell - offer, roi = gain / offer * 100;
   const okGain = gain >= state.gain, okRoi = roi >= state.roi, ok = okGain && okRoi;
+  const at = `Vendiéndolo a ${eur(sell)}${p.refIsExp ? " (venta esperada)" : ""}`;
   let why;
-  if(gain < 0) why = `Perderías ${eur(-gain)} vendiéndolo a ${eur(p.med)}.`;
-  else if(ok) why = `Vendiéndolo a ${eur(p.med)} ganarías ${eur(gain)}, un ROI del ${pct(roi)}.`;
+  if(gain < 0) why = `${at} perderías ${eur(-gain)}.`;
+  else if(ok) why = `${at} ganarías ${eur(gain)}, un ROI del ${pct(roi)}.`;
   else {
     const fails = [];
     if(!okGain) fails.push(`ganarías ${eur(gain)} y tu mínimo es ${eur(state.gain)}`);
     if(!okRoi) fails.push(`el ROI sería del ${pct(roi)} y tu mínimo es del ${pct(state.roi)}`);
-    why = `Vendiéndolo a ${eur(p.med)}, ${fails.join(", y ")}.`;
+    why = `${at}, ${fails.join(", y ")}.`;
   }
   el.innerHTML = `<div class="verdict ${ok ? "ok" : "no"}"><span class="ic" aria-hidden="true">${ok ? "✓" : "✗"}</span>
     <div><b>${ok ? "Compensa" : "No compensa"}</b><p>${why}</p></div></div>`;
