@@ -1,0 +1,5 @@
+# Los datos en claro nunca se suben: solo data.enc.json (cifrado)
+ventas.json
+*.plain.json
+.env
+__pycache__/

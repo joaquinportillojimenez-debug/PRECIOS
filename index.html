@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Precios</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Precios">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#DDE3EA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F141B" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<style>
+@font-face{font-family:"Barlow";font-weight:400;font-display:swap;src:url(fonts/barlow-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Barlow";font-weight:500;font-display:swap;src:url(fonts/barlow-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Barlow";font-weight:600;font-display:swap;src:url(fonts/barlow-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Barlow Condensed";font-weight:600;font-display:swap;src:url(fonts/barlow-condensed-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Barlow Condensed";font-weight:700;font-display:swap;src:url(fonts/barlow-condensed-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Barlow Condensed";font-weight:800;font-display:swap;src:url(fonts/barlow-condensed-latin-800-normal.woff2) format("woff2")}
+:root{
+  --shelf:#DDE3EA; --tag:#FFFFFF; --ink:#101828; --muted:#5B6575; --rule:#C9D1DB;
+  --sticker:#FFD000; --sticker-ink:#1A1400;
+  --good:#12805C; --good-s:#DDF3EA; --bad:#B42F25; --bad-s:#FBE3E0;
+  --dot:#101828; --focus:#1F5FD6;
+  --cond:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --shelf:#0F141B; --tag:#1A212B; --ink:#E8EDF3; --muted:#93A0B2; --rule:#2B3442;
+    --good:#3FBF8A; --good-s:#11372A; --bad:#F06A5E; --bad-s:#3D1A17;
+    --dot:#E8EDF3; --focus:#7FA8FF;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--shelf); color:var(--ink);
+  font:17px/1.4 var(--body);
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  -webkit-tap-highlight-color:transparent;
+}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+[hidden]{display:none!important}
+
+/* ---------- bloqueo ---------- */
+.lock{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px}
+.lock form{width:min(380px,100%)}
+.lock h1{font:800 clamp(3.4rem,14vw,5rem)/.9 var(--cond);margin:0 0 6px;letter-spacing:-.01em}
+.lock p{color:var(--muted);margin:0 0 22px}
+.field{display:block;width:100%;padding:14px 16px;border:2px solid var(--rule);border-radius:10px;background:var(--tag);font-size:1.1rem}
+.field:focus{border-color:var(--ink);outline:none}
+.remember{display:flex;gap:10px;align-items:center;margin:14px 0 18px;color:var(--muted);font-size:.95rem}
+.remember input{width:20px;height:20px;accent-color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;padding:13px 22px;background:var(--ink);color:var(--shelf);font-weight:600;cursor:pointer;min-height:48px}
+.btn.wide{width:100%}
+.err{color:var(--bad);font-weight:600;margin-top:12px;min-height:1.4em}
+
+/* ---------- cabecera ---------- */
+.wrap{max-width:1180px;margin:0 auto;padding:18px 20px 64px}
+header.top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:6px 0 14px}
+header.top h1{font:800 clamp(2.8rem,8vw,4rem)/.85 var(--cond);margin:0;letter-spacing:-.01em}
+header.top .meta{color:var(--muted);font-size:.92rem;margin-top:6px}
+.tools{display:flex;align-items:center;gap:10px}
+.margin{display:flex;align-items:center;gap:8px;background:var(--tag);border-radius:10px;padding:6px 6px 6px 12px;font-size:.95rem}
+.margin label{color:var(--muted)}
+.margin input{width:64px;border:0;background:transparent;font:600 1.25rem var(--cond);text-align:right;padding:4px 2px}
+.margin input:focus{outline:2px solid var(--focus);border-radius:6px}
+.ghost{background:transparent;border:2px solid var(--rule);border-radius:10px;padding:8px 14px;cursor:pointer;color:var(--muted);font-weight:500;min-height:44px}
+
+.searchbar{position:sticky;top:0;z-index:5;background:var(--shelf);padding:10px 0 10px;margin:0 -2px}
+.search{position:relative}
+.search svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.search input{width:100%;padding:16px 48px 16px 50px;border:2px solid transparent;border-radius:12px;background:var(--tag);font-size:1.15rem}
+.search input:focus{border-color:var(--ink);outline:none}
+.search input::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+.search .clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;width:40px;height:40px;border-radius:8px;cursor:pointer;color:var(--muted);font-size:1.4rem}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 2px 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:0;border-radius:999px;padding:9px 16px;background:transparent;box-shadow:inset 0 0 0 2px var(--rule);cursor:pointer;font-weight:500;white-space:nowrap;min-height:44px}
+.chip .c{color:var(--muted);margin-left:6px;font-variant-numeric:tabular-nums}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--shelf);box-shadow:none}
+.chip[aria-pressed="true"] .c{color:inherit;opacity:.7}
+
+/* ---------- secciones ---------- */
+section.cat{margin-top:30px}
+section.cat h2{font:800 2rem/1 var(--cond);margin:0 0 12px;display:flex;align-items:baseline;gap:12px}
+section.cat h2 small{font:500 .95rem var(--body);color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+
+/* etiqueta de estantería */
+.tag{
+  display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 1fr;column-gap:14px;row-gap:10px;
+  text-align:left;border:0;cursor:pointer;background:var(--tag);border-radius:6px;padding:14px 14px 14px 16px;
+  border-top:4px solid var(--ink);min-height:132px;
+}
+.tag:active{transform:scale(.99)}
+.tag .name{grid-column:1/-1;font:600 1.35rem/1.1 var(--cond)}
+.tag .sale{align-self:end}
+.tag .sale .lbl{display:block;color:var(--muted);font-size:.85rem}
+.tag .sale b{font:800 2.3rem/1 var(--cond)}
+.tag .sale .n{display:block;color:var(--muted);font-size:.85rem;margin-top:4px}
+.sticker{
+  align-self:end;position:relative;background:var(--sticker);color:var(--sticker-ink);
+  border-radius:8px 8px 8px 22px;padding:10px 14px 9px 22px;min-width:118px;text-align:right;
+}
+.sticker::before{content:"";position:absolute;left:9px;top:10px;width:8px;height:8px;border-radius:50%;background:var(--shelf)}
+.sticker .lbl{display:block;font-size:.8rem;font-weight:600}
+.sticker b{font:800 2rem/1 var(--cond)}
+.sticker.zero{background:transparent;box-shadow:inset 0 0 0 2px var(--rule);color:var(--muted)}
+.sticker.zero::before{display:none}
+
+.empty{background:var(--tag);border-radius:10px;padding:26px 22px;margin-top:26px}
+.empty h3{font:700 1.6rem/1.1 var(--cond);margin:0 0 6px}
+.empty p{margin:0;color:var(--muted)}
+footer{color:var(--muted);font-size:.88rem;margin-top:40px}
+
+/* ---------- detalle ---------- */
+dialog{border:0;padding:0;background:var(--tag);color:var(--ink);max-width:none;max-height:none}
+dialog::backdrop{background:rgba(8,12,18,.45)}
+@media (min-width:760px){
+  dialog{margin:0 0 0 auto;height:100%;width:min(480px,92vw);border-radius:14px 0 0 14px}
+}
+@media (max-width:759px){
+  dialog{margin:auto 0 0;width:100%;max-height:92dvh;border-radius:16px 16px 0 0}
+}
+@media (prefers-reduced-motion:no-preference){
+  dialog[open]{animation:in .22s ease-out}
+  @keyframes in{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+}
+.sheet{padding:20px 22px calc(28px + env(safe-area-inset-bottom))}
+.sheet .head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.sheet .head p{margin:0;color:var(--muted);font-size:.92rem}
+.sheet h2{font:800 2.2rem/1 var(--cond);margin:2px 0 0}
+.close{border:0;background:var(--shelf);border-radius:10px;width:44px;height:44px;flex:none;cursor:pointer;font-size:1.5rem;line-height:1}
+.pair{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:end;margin:22px 0 6px}
+.pair .sale .lbl{display:block;color:var(--muted);font-size:.9rem}
+.pair .sale b{font:800 3.6rem/.95 var(--cond)}
+.pair .sticker{min-width:150px}
+.pair .sticker b{font-size:2.8rem}
+.hint{color:var(--muted);font-size:.9rem;margin:6px 0 0}
+
+.strip{margin:26px 0 4px}
+.strip svg{display:block;width:100%;height:64px;overflow:visible}
+.strip .axis{stroke:var(--rule);stroke-width:2;stroke-linecap:round}
+.strip .dot{fill:var(--dot);stroke:var(--tag);stroke-width:2}
+.strip .med{stroke:var(--ink);stroke-width:2}
+.strip text{fill:var(--muted);font:500 13px var(--body)}
+.strip text.medl{fill:var(--ink);font-weight:600}
+
+.calc{margin-top:24px;border-top:2px solid var(--shelf);padding-top:18px}
+.calc label{display:block;font-weight:600;margin-bottom:8px}
+.calc .row{display:flex;align-items:center;gap:10px}
+.calc input{width:150px;padding:12px 14px;border:2px solid var(--rule);border-radius:10px;background:var(--tag);font:600 1.4rem var(--cond)}
+.calc input:focus{border-color:var(--ink);outline:none}
+.verdict{margin-top:12px;border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
+.verdict .ic{font-weight:800;font-size:1.2rem;line-height:1.2}
+.verdict.ok{background:var(--good-s);color:var(--good)}
+.verdict.no{background:var(--bad-s);color:var(--bad)}
+.verdict b{font-family:var(--cond);font-size:1.25rem}
+.verdict p{margin:2px 0 0;color:var(--ink);font-size:.92rem}
+
+.sales{margin-top:26px}
+.sales h3{font:700 1.3rem var(--cond);margin:0 0 6px}
+.sales table{width:100%;border-collapse:collapse;font-size:.95rem}
+.sales th{text-align:left;color:var(--muted);font-weight:500;padding:6px 8px 6px 0;border-bottom:2px solid var(--shelf)}
+.sales td{padding:10px 8px 10px 0;border-bottom:1px solid var(--shelf);vertical-align:top}
+.sales td.p{font:700 1.15rem var(--cond);text-align:right;white-space:nowrap;padding-right:0}
+.sales th.p{text-align:right;padding-right:0}
+.sales .note{display:block;color:var(--muted);font-size:.85rem}
+
+@media (max-width:520px){
+  .wrap{padding:12px 14px 56px}
+  .grid{grid-template-columns:1fr}
+  .tag .sale b{font-size:2.1rem}
+  .sticker b{font-size:1.85rem}
+}
+</style>
+</head>
+<body>
+
+<!-- Pantalla de contraseña -->
+<main class="lock" id="lock" hidden>
+  <form id="lockForm" autocomplete="on">
+    <h1>Precios</h1>
+    <p>Escribe la contraseña para ver las ventas.</p>
+    <input type="text" name="username" value="precios" autocomplete="username" hidden>
+    <input class="field" id="pw" type="password" autocomplete="current-password" placeholder="Contraseña" aria-label="Contraseña" required>
+    <label class="remember"><input type="checkbox" id="remember" checked> Recordar en este dispositivo</label>
+    <button class="btn wide" id="enter" type="submit">Entrar</button>
+    <div class="err" id="err" role="alert"></div>
+  </form>
+</main>
+
+<!-- App -->
+<div class="wrap" id="app" hidden>
+  <header class="top">
+    <div>
+      <h1>Precios</h1>
+      <div class="meta" id="meta"></div>
+    </div>
+    <div class="tools">
+      <div class="margin">
+        <label for="margin">Tu margen</label>
+        <input id="margin" class="num" type="number" inputmode="numeric" min="0" step="5" value="40">
+        <span>€</span>
+      </div>
+      <button class="ghost" id="lockBtn" type="button">Bloquear</button>
+    </div>
+  </header>
+
+  <div class="searchbar">
+    <div class="search">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>
+      <input id="q" type="search" placeholder="Busca un producto: ps5 slim, fr 255, iphone 13…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Buscar producto">
+      <button class="clear" id="clear" type="button" aria-label="Borrar búsqueda" hidden>×</button>
+    </div>
+    <nav class="chips" id="chips" aria-label="Categorías"></nav>
+  </div>
+
+  <div id="list"></div>
+  <footer id="foot"></footer>
+</div>
+
+<dialog id="detail" aria-labelledby="dName"><div class="sheet" id="sheet"></div></dialog>
+
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const LS = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+const b64d = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+const b64e = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
+const eur = n => Math.round(n).toLocaleString("es-ES") + "\u00a0€";
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm = s => String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const MESES = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const fdate = iso => { if(!iso) return null; const [y,m,d] = iso.split("-").map(Number); return `${d} ${MESES[m-1]} ${y}`; };
+const fdateLong = iso => { const [y,m,d] = iso.split("-").map(Number);
+  return `${d} de ${["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"][m-1]} de ${y}`; };
+const SRC = {lista:"Lista", whatsapp:"WhatsApp"};
+
+let ENV = null, DATA = null, PRODUCTS = [], CATS = [];
+const state = { cat: "all", q: "", margin: 40, open: null };
+{ const m = parseInt(LS.get("precios.margen"), 10); if(!isNaN(m) && m >= 0) state.margin = m; }
+
+/* ---------- cifrado ---------- */
+async function loadEnv(){
+  const r = await fetch("data.enc.json", {cache:"no-store"});
+  if(!r.ok) throw new Error("http " + r.status);
+  ENV = await r.json();
+}
+async function deriveKey(pw){
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey({name:"PBKDF2", salt:b64d(ENV.salt), iterations:ENV.iter, hash:"SHA-256"},
+    base, {name:"AES-GCM", length:256}, true, ["decrypt"]);
+}
+async function openWith(key){
+  const pt = await crypto.subtle.decrypt({name:"AES-GCM", iv:b64d(ENV.iv)}, key, b64d(ENV.ct));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+async function tryStoredKey(){
+  const raw = LS.get("precios.key");
+  if(!raw) return null;
+  try{
+    const st = JSON.parse(raw);
+    if(st.salt !== ENV.salt) return null;
+    const key = await crypto.subtle.importKey("raw", b64d(st.k), {name:"AES-GCM"}, false, ["decrypt"]);
+    return await openWith(key);
+  }catch(e){ return null; }
+}
+
+/* ---------- datos ---------- */
+function median(a){ const s=[...a].sort((x,y)=>x-y), m=s.length>>1; return s.length%2 ? s[m] : (s[m-1]+s[m])/2; }
+function build(){
+  CATS = DATA.cats;
+  const byP = {};
+  DATA.sales.forEach((s,i) => (byP[s.p] = byP[s.p] || []).push({...s, i}));
+  PRODUCTS = DATA.products.filter(p => byP[p.id]).map(p => {
+    const sales = byP[p.id].sort((a,b) => (b.date||"").localeCompare(a.date||"") || b.i - a.i);
+    const prices = sales.map(s => s.price);
+    const dates = sales.map(s => s.date).filter(Boolean).sort();
+    const cat = CATS.find(c => c.id === p.cat);
+    const hay = norm([p.name, cat ? cat.name : "", ...(p.alias||[])].join(" "));
+    return { ...p, sales, n: sales.length, med: median(prices), min: Math.min(...prices), max: Math.max(...prices),
+      last: dates.length ? dates[dates.length-1] : null, hay, hayTight: hay.replace(/\s+/g,"") };
+  });
+}
+const buyMax = p => Math.max(0, Math.round(p.med - state.margin));
+function matches(p){
+  const toks = norm(state.q).split(/\s+/).filter(Boolean);
+  return toks.every(t => p.hay.includes(t) || p.hayTight.includes(t));
+}
+const collator = new Intl.Collator("es", {numeric:true, sensitivity:"base"});
+
+/* ---------- pintar ---------- */
+function renderChips(){
+  const counts = {};
+  DATA.sales.forEach(s => { const p = DATA.products.find(x => x.id === s.p); if(p) counts[p.cat] = (counts[p.cat]||0)+1; });
+  const all = [{id:"all", name:"Todo", c:DATA.sales.length}, ...CATS.filter(c => counts[c.id]).map(c => ({...c, c:counts[c.id]}))];
+  $("#chips").innerHTML = all.map(c =>
+    `<button class="chip" type="button" data-cat="${c.id}" aria-pressed="${state.cat===c.id}">${esc(c.name)}<span class="c">${c.c}</span></button>`).join("");
+}
+function tagHTML(p){
+  const bm = buyMax(p);
+  const nTxt = p.n === 1 ? "1 venta" : p.min === p.max ? `${p.n} ventas, todas a ${eur(p.min)}` : `${p.n} ventas, de ${eur(p.min)} a ${eur(p.max)}`;
+  return `<button class="tag" type="button" data-id="${p.id}">
+    <span class="name">${esc(p.name)}</span>
+    <span class="sale"><span class="lbl">Se vende</span><b class="num">${eur(p.med)}</b><span class="n">${nTxt}</span></span>
+    <span class="sticker${bm===0?" zero":""}"><span class="lbl">Compra hasta</span><b class="num">${eur(bm)}</b></span>
+  </button>`;
+}
+function render(){
+  const list = $("#list");
+  const shown = PRODUCTS.filter(p => (state.cat === "all" || p.cat === state.cat) && matches(p));
+  if(!shown.length){
+    list.innerHTML = `<div class="empty"><h3>Ninguna venta coincide con “${esc(state.q)}”</h3>
+      <p>Prueba con menos palabras, por ejemplo solo el modelo. Si es un producto nuevo, aparecerá cuando entren ventas suyas.</p></div>`;
+    return;
+  }
+  list.innerHTML = CATS.map(c => {
+    const ps = shown.filter(p => p.cat === c.id).sort((a,b) => collator.compare(a.name, b.name));
+    if(!ps.length) return "";
+    const n = ps.reduce((t,p) => t + p.n, 0);
+    return `<section class="cat" id="cat-${c.id}"><h2>${esc(c.name)}<small>${n} ${n===1?"venta":"ventas"}</small></h2>
+      <div class="grid">${ps.map(tagHTML).join("")}</div></section>`;
+  }).join("");
+}
+function renderMeta(){
+  const t = `${DATA.sales.length} ventas, actualizado el ${fdateLong(DATA.updated)}`;
+  $("#meta").textContent = t;
+  $("#foot").textContent = "“Se vende” es la mediana de las ventas de la comunidad. “Compra hasta” es ese precio menos tu margen.";
+}
+
+function stripSVG(p){
+  if(p.n < 2 || p.min === p.max) return "";
+  const W = 420, padL = 14, padR = 14, y = 26;
+  const lo = p.min, hi = p.max, span = hi - lo || 1;
+  const x = v => padL + (v - lo) / span * (W - padL - padR);
+  const dots = p.sales.map(s => `<circle class="dot" cx="${x(s.price).toFixed(1)}" cy="${y}" r="7"><title>${eur(s.price)}${s.date?", "+fdate(s.date):""}</title></circle>`).join("");
+  const mx = x(p.med);
+  return `<div class="strip"><svg viewBox="0 0 ${W} 64" role="img" aria-label="Precios de venta de ${eur(lo)} a ${eur(hi)}, mediana ${eur(p.med)}">
+    <line class="axis" x1="${padL}" x2="${W-padR}" y1="${y}" y2="${y}"/>
+    <line class="med" x1="${mx}" x2="${mx}" y1="${y-15}" y2="${y+15}"/>
+    ${dots}
+    <text x="${padL}" y="${y+34}">${eur(lo)}</text>
+    <text x="${W-padR}" y="${y+34}" text-anchor="end">${eur(hi)}</text>
+    ${hi-lo > 0 ? `<text class="medl" x="${Math.min(Math.max(mx, padL+60), W-padR-60)}" y="${y-20}" text-anchor="middle">mediana ${eur(p.med)}</text>` : ""}
+  </svg></div>`;
+}
+function openDetail(id){
+  const p = PRODUCTS.find(x => x.id === id); if(!p) return;
+  state.open = id;
+  const cat = CATS.find(c => c.id === p.cat);
+  const bm = buyMax(p);
+  const hint = p.n === 1 ? "Solo hay una venta: tómalo como orientativo."
+             : p.n === 2 ? "Con dos ventas, la mediana es la media de las dos." : `Mediana de ${p.n} ventas.`;
+  const rows = p.sales.map(s => `<tr><td>${s.date ? fdate(s.date) : "Sin fecha"}</td>
+      <td>${SRC[s.src] || esc(s.src||"")}${s.note ? `<span class="note">${esc(s.note)}</span>` : ""}</td>
+      <td class="p num">${eur(s.price)}</td></tr>`).join("");
+  $("#sheet").innerHTML = `
+    <div class="head"><div><p>${esc(cat ? cat.name : "")}</p><h2 id="dName">${esc(p.name)}</h2></div>
+      <button class="close" type="button" id="dClose" aria-label="Cerrar">×</button></div>
+    <div class="pair">
+      <div class="sale"><span class="lbl">Se vende</span><b class="num">${eur(p.med)}</b></div>
+      <div class="sticker${bm===0?" zero":""}"><span class="lbl">Compra hasta</span><b class="num">${eur(bm)}</b></div>
+    </div>
+    <p class="hint">${hint} Margen aplicado: ${eur(state.margin)}.</p>
+    ${stripSVG(p)}
+    <div class="calc">
+      <label for="offer">¿Te lo ofrecen? Pon el precio</label>
+      <div class="row"><input id="offer" class="num" type="number" inputmode="numeric" min="0" placeholder="0"><span>€</span></div>
+      <div id="verdict" aria-live="polite"></div>
+    </div>
+    <div class="sales"><h3>${p.n === 1 ? "La venta" : `Las ${p.n} ventas`}</h3>
+      <table><thead><tr><th>Fecha</th><th>Origen</th><th class="p">Precio</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  $("#dClose").onclick = () => $("#detail").close();
+  $("#offer").oninput = e => verdict(p, e.target.value);
+  const d = $("#detail");
+  if(!d.open) d.showModal();
+}
+function verdict(p, v){
+  const el = $("#verdict"), offer = parseFloat(v);
+  if(!v || isNaN(offer)){ el.innerHTML = ""; return; }
+  const gain = Math.round(p.med - offer), ok = gain >= state.margin;
+  el.innerHTML = `<div class="verdict ${ok ? "ok" : "no"}"><span class="ic" aria-hidden="true">${ok ? "✓" : "✗"}</span>
+    <div><b>${ok ? "Entra en tu margen" : "No llega a tu margen"}</b>
+    <p>Vendiéndolo a ${eur(p.med)} sacarías ${gain >= 0 ? "unos " + eur(gain) : "pérdidas de " + eur(-gain)} de margen. Tu mínimo es ${eur(state.margin)}.</p></div></div>`;
+}
+
+/* ---------- eventos ---------- */
+function wire(){
+  $("#chips").addEventListener("click", e => {
+    const b = e.target.closest(".chip"); if(!b) return;
+    state.cat = b.dataset.cat; renderChips(); render();
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+  $("#q").addEventListener("input", e => {
+    state.q = e.target.value; $("#clear").hidden = !state.q;
+    if(state.q && state.cat !== "all"){ state.cat = "all"; renderChips(); }
+    render();
+  });
+  $("#clear").onclick = () => { $("#q").value = ""; state.q = ""; $("#clear").hidden = true; render(); $("#q").focus(); };
+  $("#list").addEventListener("click", e => { const t = e.target.closest(".tag"); if(t) openDetail(t.dataset.id); });
+  const m = $("#margin"); m.value = state.margin;
+  m.addEventListener("input", () => {
+    const v = parseInt(m.value, 10); if(isNaN(v) || v < 0) return;
+    state.margin = v; LS.set("precios.margen", String(v)); render();
+    if($("#detail").open && state.open) openDetail(state.open);
+  });
+  $("#detail").addEventListener("click", e => { if(e.target === $("#detail")) $("#detail").close(); });
+  $("#lockBtn").onclick = () => { LS.del("precios.key"); location.reload(); };
+}
+
+function showApp(){
+  build(); renderMeta(); renderChips(); render(); wire();
+  $("#lock").hidden = true; $("#app").hidden = false;
+}
+function showLock(msg){
+  $("#app").hidden = true; $("#lock").hidden = false;
+  if(msg) $("#err").textContent = msg;
+  $("#pw").focus();
+}
+
+$("#lockForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const btn = $("#enter"); btn.disabled = true; btn.textContent = "Comprobando…"; $("#err").textContent = "";
+  try{
+    const key = await deriveKey($("#pw").value);
+    DATA = await openWith(key);
+    if($("#remember").checked) LS.set("precios.key", JSON.stringify({salt:ENV.salt, k:b64e(await crypto.subtle.exportKey("raw", key))}));
+    showApp();
+  }catch(err){
+    $("#err").textContent = "Contraseña incorrecta.";
+    btn.disabled = false; btn.textContent = "Entrar"; $("#pw").select();
+  }
+});
+
+(async function start(){
+  try{ await loadEnv(); }
+  catch(e){ showLock("No se han podido cargar los datos. Comprueba la conexión y vuelve a abrir la app."); $("#enter").disabled = true; return; }
+  const d = await tryStoredKey();
+  if(d){ DATA = d; showApp(); } else { showLock(); }
+})();
+
+if("serviceWorker" in navigator && location.protocol === "https:"){
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+</script>
+</body>
+</html>
