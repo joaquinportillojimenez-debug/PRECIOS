@@ -50,12 +50,15 @@ button,input{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .num{font-variant-numeric:tabular-nums}
 [hidden]{display:none!important}
+.ico{flex:none;width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- marca ---------- */
+.brand{display:flex;align-items:center;gap:14px}
+.logo{flex:none;width:56px;height:56px;border-radius:13px}
 
 /* ---------- bloqueo ---------- */
 .lock{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px}
 .lock form{width:min(380px,100%)}
-.brand{display:flex;align-items:center;gap:14px}
-.logo{flex:none;width:56px;height:56px;border-radius:13px}
 .lock .brand{margin-bottom:10px}
 .lock .logo{width:68px;height:68px;border-radius:15px}
 .lock h1{font:800 clamp(3.4rem,14vw,5rem)/.9 var(--cond);margin:0;letter-spacing:-.01em}
@@ -72,60 +75,69 @@ button,input{font:inherit;color:inherit}
 .wrap{max-width:1180px;margin:0 auto;padding:18px 20px 64px}
 header.top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:6px 0 14px}
 header.top h1{font:800 clamp(2.8rem,8vw,4rem)/.85 var(--cond);margin:0;letter-spacing:-.01em}
-header.top .meta{color:var(--muted);font-size:.92rem;margin-top:6px}
-.tools{display:flex;align-items:center;gap:10px}
-.margin{display:flex;align-items:center;gap:8px;background:var(--tag);border-radius:10px;padding:6px 6px 6px 12px;font-size:.95rem}
-.margin label{color:var(--muted)}
-.margin input{width:64px;border:0;background:transparent;font:600 1.25rem var(--cond);text-align:right;padding:4px 2px}
-.margin input:focus{outline:2px solid var(--focus);border-radius:6px}
-.ghost{background:transparent;border:2px solid var(--rule);border-radius:10px;padding:8px 14px;cursor:pointer;color:var(--muted);font-weight:500;min-height:44px}
+header.top .meta{color:var(--muted);font-size:.92rem;margin-top:8px}
+.tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pref{display:flex;align-items:center;gap:4px;background:var(--tag);border-radius:10px;padding:6px 10px 6px 12px;font-size:.95rem;min-height:48px}
+.pref label{color:var(--muted);margin-right:4px}
+.pref input{width:52px;border:0;background:transparent;font:700 1.3rem var(--cond);text-align:right;padding:4px 2px}
+.pref input:focus{outline:2px solid var(--focus);border-radius:6px}
+.ghost{background:transparent;border:2px solid var(--rule);border-radius:10px;padding:8px 14px;cursor:pointer;color:var(--muted);font-weight:500;min-height:48px}
 
 .searchbar{position:sticky;top:0;z-index:5;background:var(--shelf);padding:10px 0 10px;margin:0 -2px}
 .search{position:relative}
-.search svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.search > .ico{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted);width:22px;height:22px;stroke-width:2.4}
 .search input{width:100%;padding:16px 48px 16px 50px;border:2px solid transparent;border-radius:12px;background:var(--tag);font-size:1.15rem}
 .search input:focus{border-color:var(--ink);outline:none}
 .search input::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
 .search .clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;width:40px;height:40px;border-radius:8px;cursor:pointer;color:var(--muted);font-size:1.4rem}
 .chips{display:flex;gap:8px;overflow-x:auto;padding:12px 2px 2px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
-.chip{flex:none;border:0;border-radius:999px;padding:9px 16px;background:transparent;box-shadow:inset 0 0 0 2px var(--rule);cursor:pointer;font-weight:500;white-space:nowrap;min-height:44px}
-.chip .c{color:var(--muted);margin-left:6px;font-variant-numeric:tabular-nums}
+.chip{flex:none;display:inline-flex;align-items:center;gap:7px;border:0;border-radius:999px;padding:9px 16px 9px 13px;background:transparent;box-shadow:inset 0 0 0 2px var(--rule);cursor:pointer;font-weight:500;white-space:nowrap;min-height:44px}
+.chip .c{color:var(--muted);font-variant-numeric:tabular-nums}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--shelf);box-shadow:none}
 .chip[aria-pressed="true"] .c{color:inherit;opacity:.7}
 
 /* ---------- secciones ---------- */
 section.cat{margin-top:30px}
-section.cat h2{font:800 2rem/1 var(--cond);margin:0 0 12px;display:flex;align-items:baseline;gap:12px}
-section.cat h2 small{font:500 .95rem var(--body);color:var(--muted)}
+section.cat h2{font:800 2rem/1 var(--cond);margin:0 0 12px;display:flex;align-items:center;gap:10px}
+section.cat h2 .ico{width:1.05em;height:1.05em;stroke-width:1.7}
+section.cat h2 small{font:500 .95rem var(--body);color:var(--muted);align-self:flex-end;margin-bottom:.15em}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
 
 /* etiqueta de estantería */
 .tag{
-  display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 1fr;column-gap:14px;row-gap:10px;
-  text-align:left;border:0;cursor:pointer;background:var(--tag);border-radius:6px;padding:14px 14px 14px 16px;
-  border-top:4px solid var(--ink);min-height:132px;
+  display:flex;flex-direction:column;gap:12px;text-align:left;border:0;cursor:pointer;
+  background:var(--tag);border-radius:6px;padding:14px 14px 14px 16px;border-top:4px solid var(--ink);
 }
 .tag:active{transform:scale(.99)}
-.tag .name{grid-column:1/-1;font:600 1.35rem/1.1 var(--cond)}
-.tag .sale{align-self:end}
-.tag .sale .lbl{display:block;color:var(--muted);font-size:.85rem}
-.tag .sale b{font:800 2.3rem/1 var(--cond)}
-.tag .sale .n{display:block;color:var(--muted);font-size:.85rem;margin-top:4px}
+.tag .name{font:600 1.35rem/1.1 var(--cond)}
+.tag .row{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.tag .n{display:block;color:var(--muted);font-size:.85rem;margin-top:6px}
+.tag .asks{color:var(--muted);font-size:.85rem;margin-top:-4px}
+
+/* pegatina amarilla = precio de venta */
 .sticker{
-  align-self:end;position:relative;background:var(--sticker);color:var(--sticker-ink);
-  border-radius:8px 8px 8px 22px;padding:10px 14px 9px 22px;min-width:118px;text-align:right;
+  position:relative;display:inline-block;background:var(--sticker);color:var(--sticker-ink);
+  border-radius:8px 8px 8px 24px;padding:9px 16px 9px 26px;min-width:140px;
 }
-.sticker::before{content:"";position:absolute;left:9px;top:10px;width:8px;height:8px;border-radius:50%;background:var(--shelf)}
+.sticker::before{content:"";position:absolute;left:10px;top:50%;margin-top:-4px;width:8px;height:8px;border-radius:50%;background:var(--shelf)}
 .sticker .lbl{display:block;font-size:.8rem;font-weight:600}
-.sticker b{font:800 2rem/1 var(--cond)}
-.sticker.zero{background:transparent;box-shadow:inset 0 0 0 2px var(--rule);color:var(--muted)}
-.sticker.zero::before{display:none}
+.sticker b{font:800 2.5rem/1 var(--cond)}
+.sticker.ask{background:transparent;box-shadow:inset 0 0 0 2px var(--sticker);color:var(--ink)}
+.sticker.ask::before{background:var(--sticker)}
+
+/* precio de compra, secundario */
+.buy{text-align:right}
+.buy .lbl{display:block;color:var(--muted);font-size:.8rem}
+.buy b{font:700 1.55rem/1.05 var(--cond)}
+.buy .roi{display:block;color:var(--muted);font-size:.8rem;margin-top:2px}
+.buy.none b{font-size:1.1rem;color:var(--muted)}
 
 .empty{background:var(--tag);border-radius:10px;padding:26px 22px;margin-top:26px}
 .empty h3{font:700 1.6rem/1.1 var(--cond);margin:0 0 6px}
 .empty p{margin:0;color:var(--muted)}
-footer{color:var(--muted);font-size:.88rem;margin-top:40px}
+footer{color:var(--muted);font-size:.88rem;margin-top:40px;max-width:70ch}
+footer p{margin:0 0 6px}
 
 /* ---------- detalle ---------- */
 dialog{border:0;padding:0;background:var(--tag);color:var(--ink);max-width:none;max-height:none}
@@ -142,23 +154,28 @@ dialog::backdrop{background:rgba(8,12,18,.45)}
 }
 .sheet{padding:20px 22px calc(28px + env(safe-area-inset-bottom))}
 .sheet .head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.sheet .head p{margin:0;color:var(--muted);font-size:.92rem}
-.sheet h2{font:800 2.2rem/1 var(--cond);margin:2px 0 0}
+.sheet .head p{margin:0;color:var(--muted);font-size:.92rem;display:flex;align-items:center;gap:6px}
+.sheet h2{font:800 2.2rem/1 var(--cond);margin:4px 0 0}
 .close{border:0;background:var(--shelf);border-radius:10px;width:44px;height:44px;flex:none;cursor:pointer;font-size:1.5rem;line-height:1}
-.pair{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:end;margin:22px 0 6px}
-.pair .sale .lbl{display:block;color:var(--muted);font-size:.9rem}
-.pair .sale b{font:800 3.6rem/.95 var(--cond)}
-.pair .sticker{min-width:150px}
-.pair .sticker b{font-size:2.8rem}
-.hint{color:var(--muted);font-size:.9rem;margin:6px 0 0}
+.pair{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin:22px 0 6px;flex-wrap:wrap}
+.pair .sticker{min-width:180px}
+.pair .sticker b{font-size:3.4rem}
+.pair .buy b{font-size:2rem}
+.pair .buy.none b{font-size:1.3rem}
+.hint{color:var(--muted);font-size:.9rem;margin:10px 0 0}
 
 .strip{margin:26px 0 4px}
 .strip svg{display:block;width:100%;height:64px;overflow:visible}
 .strip .axis{stroke:var(--rule);stroke-width:2;stroke-linecap:round}
 .strip .dot{fill:var(--dot);stroke:var(--tag);stroke-width:2}
+.strip .dot.ask{fill:var(--tag);stroke:var(--dot);stroke-width:2}
 .strip .med{stroke:var(--ink);stroke-width:2}
 .strip text{fill:var(--muted);font:500 13px var(--body)}
 .strip text.medl{fill:var(--ink);font-weight:600}
+.legend{display:flex;gap:16px;color:var(--muted);font-size:.85rem;margin-top:4px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:11px;height:11px;border-radius:50%;background:var(--dot);display:inline-block}
+.legend i.ask{background:transparent;box-shadow:inset 0 0 0 2px var(--dot)}
 
 .calc{margin-top:24px;border-top:2px solid var(--shelf);padding-top:18px}
 .calc label{display:block;font-weight:600;margin-bottom:8px}
@@ -174,6 +191,7 @@ dialog::backdrop{background:rgba(8,12,18,.45)}
 
 .sales{margin-top:26px}
 .sales h3{font:700 1.3rem var(--cond);margin:0 0 6px}
+.sales h3 small{font:400 .85rem var(--body);color:var(--muted);margin-left:6px}
 .sales table{width:100%;border-collapse:collapse;font-size:.95rem}
 .sales th{text-align:left;color:var(--muted);font-weight:500;padding:6px 8px 6px 0;border-bottom:2px solid var(--shelf)}
 .sales td{padding:10px 8px 10px 0;border-bottom:1px solid var(--shelf);vertical-align:top}
@@ -184,8 +202,7 @@ dialog::backdrop{background:rgba(8,12,18,.45)}
 @media (max-width:520px){
   .wrap{padding:12px 14px 56px}
   .grid{grid-template-columns:1fr}
-  .tag .sale b{font-size:2.1rem}
-  .sticker b{font-size:1.85rem}
+  .sticker b{font-size:2.3rem}
 }
 </style>
 </head>
@@ -212,18 +229,15 @@ dialog::backdrop{background:rgba(8,12,18,.45)}
       <div class="meta" id="meta"></div>
     </div>
     <div class="tools">
-      <div class="margin">
-        <label for="margin">Tu margen</label>
-        <input id="margin" class="num" type="number" inputmode="numeric" min="0" step="5" value="40">
-        <span>€</span>
-      </div>
+      <div class="pref"><label for="gain">Ganar mínimo</label><input id="gain" class="num" type="number" inputmode="numeric" min="0" step="5"><span>€</span></div>
+      <div class="pref"><label for="roi">ROI mínimo</label><input id="roi" class="num" type="number" inputmode="numeric" min="0" step="5"><span>%</span></div>
       <button class="ghost" id="lockBtn" type="button">Bloquear</button>
     </div>
   </header>
 
   <div class="searchbar">
     <div class="search">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>
       <input id="q" type="search" placeholder="Busca un producto: ps5 slim, fr 255, iphone 13…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Buscar producto">
       <button class="clear" id="clear" type="button" aria-label="Borrar búsqueda" hidden>×</button>
     </div>
@@ -246,18 +260,34 @@ const LS = {
 };
 const b64d = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 const b64e = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
-const eur = n => Math.round(n).toLocaleString("es-ES") + "\u00a0€";
+const eur = n => Math.round(n).toLocaleString("es-ES") + " €";
+const pct = n => Math.round(n) + " %";
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const norm = s => String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 const MESES = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
 const fdate = iso => { if(!iso) return null; const [y,m,d] = iso.split("-").map(Number); return `${d} ${MESES[m-1]} ${y}`; };
 const fdateLong = iso => { const [y,m,d] = iso.split("-").map(Number);
   return `${d} de ${["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"][m-1]} de ${y}`; };
-const SRC = {lista:"Lista", whatsapp:"WhatsApp"};
+const SRC = {lista:"Lista", ventas:"Grupo de ventas", compras:"Grupo de compras", whatsapp:"WhatsApp"};
+
+/* Pictogramas por categoría (24×24, trazo) */
+const ICONS = {
+  iphone: '<rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M10.5 5h3"/>',
+  samsung: '<rect x="6.5" y="2.5" width="11" height="19" rx="1.8"/><circle cx="12" cy="5.2" r=".9" fill="currentColor" stroke="none"/>',
+  ipad: '<rect x="4.5" y="2.5" width="15" height="19" rx="2.4"/><circle cx="12" cy="4.9" r=".8" fill="currentColor" stroke="none"/>',
+  ps5: '<path d="M10 3h4v18h-4z"/><path d="M10 4C6.5 5 5.2 8 5.2 12s1.3 7 4.8 8"/><path d="M14 4c3.5 1 4.8 4 4.8 8s-1.3 7-4.8 8"/>',
+  switch: '<rect x="2.5" y="6.5" width="19" height="11" rx="3"/><path d="M7 6.5v11M17 6.5v11"/><circle cx="4.8" cy="10" r=".9" fill="currentColor" stroke="none"/><circle cx="19.2" cy="14" r=".9" fill="currentColor" stroke="none"/>',
+  garmin: '<circle cx="12" cy="12" r="5.5"/><path d="M9.2 7.2 9.8 2.5h4.4l.6 4.7M9.2 16.8l.6 4.7h4.4l.6-4.7"/><path d="M17.5 12h1.3"/>',
+  dji: '<rect x="9" y="10" width="6" height="11.5" rx="2"/><circle cx="12" cy="6" r="3.5"/><circle cx="12" cy="6" r="1.2"/>',
+  quest: '<rect x="2.5" y="7.5" width="19" height="10" rx="4.5"/><path d="M10 17.5c.6-1.6 1.2-2.2 2-2.2s1.4.6 2 2.2"/>',
+  _: '<path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/>'
+};
+const icon = c => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${ICONS[(c && (c.icon || c.id))] || ICONS._}</svg>`;
 
 let ENV = null, DATA = null, PRODUCTS = [], CATS = [];
-const state = { cat: "all", q: "", margin: 40, open: null };
-{ const m = parseInt(LS.get("precios.margen"), 10); if(!isNaN(m) && m >= 0) state.margin = m; }
+const state = { cat: "all", q: "", gain: 40, roi: 20, open: null };
+{ const g = parseInt(LS.get("precios.ganancia"), 10); if(!isNaN(g) && g >= 0) state.gain = g;
+  const r = parseInt(LS.get("precios.roi"), 10); if(!isNaN(r) && r >= 0) state.roi = r; }
 
 /* ---------- cifrado ---------- */
 async function loadEnv(){
@@ -287,42 +317,69 @@ async function tryStoredKey(){
 
 /* ---------- datos ---------- */
 function median(a){ const s=[...a].sort((x,y)=>x-y), m=s.length>>1; return s.length%2 ? s[m] : (s[m-1]+s[m])/2; }
+const isAsk = s => s.kind === "pide";
 function build(){
   CATS = DATA.cats;
   const byP = {};
   DATA.sales.forEach((s,i) => (byP[s.p] = byP[s.p] || []).push({...s, i}));
   PRODUCTS = DATA.products.filter(p => byP[p.id]).map(p => {
-    const sales = byP[p.id].sort((a,b) => (b.date||"").localeCompare(a.date||"") || b.i - a.i);
-    const prices = sales.map(s => s.price);
+    const all = byP[p.id].sort((a,b) => (b.date||"").localeCompare(a.date||"") || b.i - a.i);
+    const sales = all.filter(s => !isAsk(s)), asks = all.filter(isAsk);
+    const sp = sales.map(s => s.price), ap = asks.map(s => s.price);
     const dates = sales.map(s => s.date).filter(Boolean).sort();
     const cat = CATS.find(c => c.id === p.cat);
     const hay = norm([p.name, cat ? cat.name : "", ...(p.alias||[])].join(" "));
-    return { ...p, sales, n: sales.length, med: median(prices), min: Math.min(...prices), max: Math.max(...prices),
+    return { ...p, cat_: cat, sales, asks, n: sales.length,
+      med: sp.length ? median(sp) : null, min: sp.length ? Math.min(...sp) : null, max: sp.length ? Math.max(...sp) : null,
+      askMed: ap.length ? median(ap) : null, askMin: ap.length ? Math.min(...ap) : null, askMax: ap.length ? Math.max(...ap) : null,
       last: dates.length ? dates[dates.length-1] : null, hay, hayTight: hay.replace(/\s+/g,"") };
   });
 }
-const buyMax = p => Math.max(0, Math.round(p.med - state.margin));
+/* Precio máximo de compra: el que cumple a la vez la ganancia mínima y el ROI mínimo.
+   Si para eso habría que comprarlo por menos del 30 % de lo que se vende, no compensa. */
+const MIN_BUY_SHARE = 0.3;
+function buyInfo(sell){
+  if(sell == null) return null;
+  const byGain = sell - state.gain, byRoi = sell / (1 + state.roi/100);
+  const buy = Math.floor(Math.min(byGain, byRoi));
+  if(buy < sell * MIN_BUY_SHARE) return { buy: 0, none: true };
+  const gain = sell - buy;
+  return { buy, gain, roi: gain / buy * 100, limit: byGain <= byRoi ? "gain" : "roi" };
+}
 function matches(p){
   const toks = norm(state.q).split(/\s+/).filter(Boolean);
   return toks.every(t => p.hay.includes(t) || p.hayTight.includes(t));
 }
 const collator = new Intl.Collator("es", {numeric:true, sensitivity:"base"});
+const ventas = n => `${n} ${n === 1 ? "venta" : "ventas"}`;
 
 /* ---------- pintar ---------- */
 function renderChips(){
   const counts = {};
-  DATA.sales.forEach(s => { const p = DATA.products.find(x => x.id === s.p); if(p) counts[p.cat] = (counts[p.cat]||0)+1; });
-  const all = [{id:"all", name:"Todo", c:DATA.sales.length}, ...CATS.filter(c => counts[c.id]).map(c => ({...c, c:counts[c.id]}))];
+  PRODUCTS.forEach(p => counts[p.cat] = (counts[p.cat]||0) + p.n + p.asks.length);
+  const nSales = DATA.sales.filter(s => !isAsk(s)).length;
+  const all = [{id:"all", name:"Todo", c:nSales}, ...CATS.filter(c => counts[c.id]).map(c => ({...c, c:PRODUCTS.filter(p => p.cat === c.id).reduce((t,p) => t + p.n, 0)}))];
   $("#chips").innerHTML = all.map(c =>
-    `<button class="chip" type="button" data-cat="${c.id}" aria-pressed="${state.cat===c.id}">${esc(c.name)}<span class="c">${c.c}</span></button>`).join("");
+    `<button class="chip" type="button" data-cat="${c.id}" aria-pressed="${state.cat===c.id}">${c.id === "all" ? "" : icon(c)}${esc(c.name)}<span class="c">${c.c}</span></button>`).join("");
+}
+function buyHTML(b){
+  if(!b) return `<span class="buy none"><span class="lbl">Comprar hasta</span><b>Sin ventas aún</b></span>`;
+  if(b.none) return `<span class="buy none"><span class="lbl">Comprar hasta</span><b>No compensa</b></span>`;
+  return `<span class="buy"><span class="lbl">Comprar hasta</span><b class="num">${eur(b.buy)}</b><span class="roi">ganas ${eur(b.gain)}, ROI ${pct(b.roi)}</span></span>`;
 }
 function tagHTML(p){
-  const bm = buyMax(p);
-  const nTxt = p.n === 1 ? "1 venta" : p.min === p.max ? `${p.n} ventas, todas a ${eur(p.min)}` : `${p.n} ventas, de ${eur(p.min)} a ${eur(p.max)}`;
+  const hasSales = p.n > 0;
+  const range = !hasSales ? "" : p.n === 1 ? "1 venta" : p.min === p.max ? `${p.n} ventas, todas a ${eur(p.min)}` : `${p.n} ventas, de ${eur(p.min)} a ${eur(p.max)}`;
+  const sticker = hasSales
+    ? `<span class="sticker"><span class="lbl">Se vende</span><b class="num">${eur(p.med)}</b></span>`
+    : `<span class="sticker ask"><span class="lbl">Piden</span><b class="num">${eur(p.askMed)}</b></span>`;
+  const asks = p.asks.length && hasSales
+    ? `<span class="asks">${p.asks.length === 1 ? `Piden ${eur(p.askMin)}` : `Piden de ${eur(p.askMin)} a ${eur(p.askMax)}`}</span>` : "";
+  const sub = hasSales ? range : `${p.asks.length} ${p.asks.length === 1 ? "precio pedido" : "precios pedidos"}, sin ventas`;
   return `<button class="tag" type="button" data-id="${p.id}">
     <span class="name">${esc(p.name)}</span>
-    <span class="sale"><span class="lbl">Se vende</span><b class="num">${eur(p.med)}</b><span class="n">${nTxt}</span></span>
-    <span class="sticker${bm===0?" zero":""}"><span class="lbl">Compra hasta</span><b class="num">${eur(bm)}</b></span>
+    <span class="row"><span>${sticker}<span class="n">${sub}</span></span>${buyHTML(buyInfo(p.med))}</span>
+    ${asks}
   </button>`;
 }
 function render(){
@@ -337,70 +394,90 @@ function render(){
     const ps = shown.filter(p => p.cat === c.id).sort((a,b) => collator.compare(a.name, b.name));
     if(!ps.length) return "";
     const n = ps.reduce((t,p) => t + p.n, 0);
-    return `<section class="cat" id="cat-${c.id}"><h2>${esc(c.name)}<small>${n} ${n===1?"venta":"ventas"}</small></h2>
+    return `<section class="cat" id="cat-${c.id}"><h2>${icon(c)}${esc(c.name)}<small>${ventas(n)}</small></h2>
       <div class="grid">${ps.map(tagHTML).join("")}</div></section>`;
   }).join("");
 }
 function renderMeta(){
-  const t = `${DATA.sales.length} ventas, actualizado el ${fdateLong(DATA.updated)}`;
-  $("#meta").textContent = t;
-  $("#foot").textContent = "“Se vende” es la mediana de las ventas de la comunidad. “Compra hasta” es ese precio menos tu margen.";
+  const n = DATA.sales.filter(s => !isAsk(s)).length;
+  $("#meta").textContent = `${ventas(n)}, actualizado el ${fdateLong(DATA.updated)}`;
+  $("#foot").innerHTML = `<p>“Se vende” es la mediana de lo que se ha vendido en la comunidad. Los precios que piden en el grupo de compras salen aparte y no cuentan para ese precio.</p>
+    <p>“Comprar hasta” es lo máximo que puedes pagar para ganar al menos ${eur(state.gain)} y un ROI del ${pct(state.roi)} a la vez.</p>`;
 }
 
 function stripSVG(p){
-  if(p.n < 2 || p.min === p.max) return "";
-  const W = 420, padL = 14, padR = 14, y = 26;
-  const lo = p.min, hi = p.max, span = hi - lo || 1;
+  const pts = [...p.sales.map(s => ({...s, ask:false})), ...p.asks.map(s => ({...s, ask:true}))];
+  const prices = pts.map(s => s.price);
+  const lo = Math.min(...prices), hi = Math.max(...prices);
+  if(pts.length < 2 || lo === hi) return "";
+  const W = 420, padL = 14, padR = 14, y = 26, span = hi - lo;
   const x = v => padL + (v - lo) / span * (W - padL - padR);
-  const dots = p.sales.map(s => `<circle class="dot" cx="${x(s.price).toFixed(1)}" cy="${y}" r="7"><title>${eur(s.price)}${s.date?", "+fdate(s.date):""}</title></circle>`).join("");
-  const mx = x(p.med);
-  return `<div class="strip"><svg viewBox="0 0 ${W} 64" role="img" aria-label="Precios de venta de ${eur(lo)} a ${eur(hi)}, mediana ${eur(p.med)}">
+  const dots = pts.map(s => `<circle class="dot${s.ask ? " ask" : ""}" cx="${x(s.price).toFixed(1)}" cy="${y}" r="7"><title>${s.ask ? "Piden" : "Vendido"} ${eur(s.price)}${s.date ? ", " + fdate(s.date) : ""}</title></circle>`).join("");
+  const med = p.med != null && p.n >= 2 ? x(p.med) : null;
+  return `<div class="strip"><svg viewBox="0 0 ${W} 64" role="img" aria-label="Precios de ${eur(lo)} a ${eur(hi)}">
     <line class="axis" x1="${padL}" x2="${W-padR}" y1="${y}" y2="${y}"/>
-    <line class="med" x1="${mx}" x2="${mx}" y1="${y-15}" y2="${y+15}"/>
+    ${med != null ? `<line class="med" x1="${med}" x2="${med}" y1="${y-15}" y2="${y+15}"/>` : ""}
     ${dots}
     <text x="${padL}" y="${y+34}">${eur(lo)}</text>
     <text x="${W-padR}" y="${y+34}" text-anchor="end">${eur(hi)}</text>
-    ${hi-lo > 0 ? `<text class="medl" x="${Math.min(Math.max(mx, padL+60), W-padR-60)}" y="${y-20}" text-anchor="middle">mediana ${eur(p.med)}</text>` : ""}
-  </svg></div>`;
+    ${med != null ? `<text class="medl" x="${Math.min(Math.max(med, padL+60), W-padR-60)}" y="${y-20}" text-anchor="middle">mediana ${eur(p.med)}</text>` : ""}
+  </svg>${p.asks.length ? `<div class="legend"><span><i></i>Vendido</span><span><i class="ask"></i>Piden</span></div>` : ""}</div>`;
+}
+function rowsHTML(list){
+  return list.map(s => `<tr><td>${s.date ? fdate(s.date) : "Sin fecha"}</td>
+      <td>${SRC[s.src] || esc(s.src||"")}${s.note ? `<span class="note">${esc(s.note)}</span>` : ""}</td>
+      <td class="p num">${eur(s.price)}</td></tr>`).join("");
 }
 function openDetail(id){
   const p = PRODUCTS.find(x => x.id === id); if(!p) return;
   state.open = id;
-  const cat = CATS.find(c => c.id === p.cat);
-  const bm = buyMax(p);
-  const hint = p.n === 1 ? "Solo hay una venta: tómalo como orientativo."
-             : p.n === 2 ? "Con dos ventas, la mediana es la media de las dos." : `Mediana de ${p.n} ventas.`;
-  const rows = p.sales.map(s => `<tr><td>${s.date ? fdate(s.date) : "Sin fecha"}</td>
-      <td>${SRC[s.src] || esc(s.src||"")}${s.note ? `<span class="note">${esc(s.note)}</span>` : ""}</td>
-      <td class="p num">${eur(s.price)}</td></tr>`).join("");
+  const b = buyInfo(p.med);
+  let hint;
+  if(!p.n) hint = "Todavía no hay ventas cerradas de este producto, solo lo que piden en el grupo de compras.";
+  else {
+    hint = p.n === 1 ? "Solo hay una venta: tómalo como orientativo." : p.n === 2 ? "Con dos ventas, la mediana es la media de las dos." : `Mediana de ${p.n} ventas.`;
+    if(b && b.none) hint += ` Para ganar tus ${eur(state.gain)} tendrías que comprarlo casi regalado, por eso sale “No compensa”.`;
+    if(b && !b.none) hint += b.limit === "gain" ? ` El tope de compra lo marca tu ganancia mínima de ${eur(state.gain)}.` : ` El tope de compra lo marca tu ROI mínimo del ${pct(state.roi)}.`;
+  }
+  const sticker = p.n
+    ? `<div class="sticker"><span class="lbl">Se vende</span><b class="num">${eur(p.med)}</b></div>`
+    : `<div class="sticker ask"><span class="lbl">Piden</span><b class="num">${eur(p.askMed)}</b></div>`;
   $("#sheet").innerHTML = `
-    <div class="head"><div><p>${esc(cat ? cat.name : "")}</p><h2 id="dName">${esc(p.name)}</h2></div>
+    <div class="head"><div><p>${icon(p.cat_)}${esc(p.cat_ ? p.cat_.name : "")}</p><h2 id="dName">${esc(p.name)}</h2></div>
       <button class="close" type="button" id="dClose" aria-label="Cerrar">×</button></div>
-    <div class="pair">
-      <div class="sale"><span class="lbl">Se vende</span><b class="num">${eur(p.med)}</b></div>
-      <div class="sticker${bm===0?" zero":""}"><span class="lbl">Compra hasta</span><b class="num">${eur(bm)}</b></div>
-    </div>
-    <p class="hint">${hint} Margen aplicado: ${eur(state.margin)}.</p>
+    <div class="pair">${sticker}${buyHTML(b)}</div>
+    <p class="hint">${hint}</p>
     ${stripSVG(p)}
-    <div class="calc">
+    ${p.n ? `<div class="calc">
       <label for="offer">¿Te lo ofrecen? Pon el precio</label>
       <div class="row"><input id="offer" class="num" type="number" inputmode="numeric" min="0" placeholder="0"><span>€</span></div>
       <div id="verdict" aria-live="polite"></div>
-    </div>
-    <div class="sales"><h3>${p.n === 1 ? "La venta" : `Las ${p.n} ventas`}</h3>
-      <table><thead><tr><th>Fecha</th><th>Origen</th><th class="p">Precio</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    </div>` : ""}
+    ${p.n ? `<div class="sales"><h3>${p.n === 1 ? "La venta" : `Las ${p.n} ventas`}</h3>
+      <table><thead><tr><th>Fecha</th><th>Origen</th><th class="p">Precio</th></tr></thead><tbody>${rowsHTML(p.sales)}</tbody></table></div>` : ""}
+    ${p.asks.length ? `<div class="sales"><h3>Lo que piden<small>no cuenta para “se vende”</small></h3>
+      <table><thead><tr><th>Fecha</th><th>Origen</th><th class="p">Precio</th></tr></thead><tbody>${rowsHTML(p.asks)}</tbody></table></div>` : ""}`;
   $("#dClose").onclick = () => $("#detail").close();
-  $("#offer").oninput = e => verdict(p, e.target.value);
+  const off = $("#offer"); if(off) off.oninput = e => verdict(p, e.target.value);
   const d = $("#detail");
   if(!d.open) d.showModal();
 }
 function verdict(p, v){
   const el = $("#verdict"), offer = parseFloat(v);
-  if(!v || isNaN(offer)){ el.innerHTML = ""; return; }
-  const gain = Math.round(p.med - offer), ok = gain >= state.margin;
+  if(!v || isNaN(offer) || offer <= 0){ el.innerHTML = ""; return; }
+  const gain = p.med - offer, roi = gain / offer * 100;
+  const okGain = gain >= state.gain, okRoi = roi >= state.roi, ok = okGain && okRoi;
+  let why;
+  if(gain < 0) why = `Perderías ${eur(-gain)} vendiéndolo a ${eur(p.med)}.`;
+  else if(ok) why = `Vendiéndolo a ${eur(p.med)} ganarías ${eur(gain)}, un ROI del ${pct(roi)}.`;
+  else {
+    const fails = [];
+    if(!okGain) fails.push(`ganarías ${eur(gain)} y tu mínimo es ${eur(state.gain)}`);
+    if(!okRoi) fails.push(`el ROI sería del ${pct(roi)} y tu mínimo es del ${pct(state.roi)}`);
+    why = `Vendiéndolo a ${eur(p.med)}, ${fails.join(", y ")}.`;
+  }
   el.innerHTML = `<div class="verdict ${ok ? "ok" : "no"}"><span class="ic" aria-hidden="true">${ok ? "✓" : "✗"}</span>
-    <div><b>${ok ? "Entra en tu margen" : "No llega a tu margen"}</b>
-    <p>Vendiéndolo a ${eur(p.med)} sacarías ${gain >= 0 ? "unos " + eur(gain) : "pérdidas de " + eur(-gain)} de margen. Tu mínimo es ${eur(state.margin)}.</p></div></div>`;
+    <div><b>${ok ? "Compensa" : "No compensa"}</b><p>${why}</p></div></div>`;
 }
 
 /* ---------- eventos ---------- */
@@ -417,11 +494,13 @@ function wire(){
   });
   $("#clear").onclick = () => { $("#q").value = ""; state.q = ""; $("#clear").hidden = true; render(); $("#q").focus(); };
   $("#list").addEventListener("click", e => { const t = e.target.closest(".tag"); if(t) openDetail(t.dataset.id); });
-  const m = $("#margin"); m.value = state.margin;
-  m.addEventListener("input", () => {
-    const v = parseInt(m.value, 10); if(isNaN(v) || v < 0) return;
-    state.margin = v; LS.set("precios.margen", String(v)); render();
-    if($("#detail").open && state.open) openDetail(state.open);
+  [["gain","precios.ganancia"],["roi","precios.roi"]].forEach(([k, key]) => {
+    const el = $("#" + k); el.value = state[k];
+    el.addEventListener("input", () => {
+      const v = parseInt(el.value, 10); if(isNaN(v) || v < 0) return;
+      state[k] = v; LS.set(key, String(v)); render(); renderMeta();
+      if($("#detail").open && state.open) openDetail(state.open);
+    });
   });
   $("#detail").addEventListener("click", e => { if(e.target === $("#detail")) $("#detail").close(); });
   $("#lockBtn").onclick = () => { LS.del("precios.key"); location.reload(); };
