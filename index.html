@@ -11,6 +11,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#DDE3EA" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0F141B" media="(prefers-color-scheme: dark)">
+<script>try{var t=localStorage.getItem("precios.tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;}catch(e){}</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=2">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=2">
@@ -31,12 +32,18 @@
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
-  :root{
+  :root:not([data-theme="light"]){
     --shelf:#0F141B; --tag:#1A212B; --ink:#E8EDF3; --muted:#93A0B2; --rule:#2B3442;
     --good:#3FBF8A; --good-s:#11372A; --bad:#F06A5E; --bad-s:#3D1A17;
     --dot:#E8EDF3; --focus:#7FA8FF;
     color-scheme:dark;
   }
+}
+:root[data-theme="dark"]{
+    --shelf:#0F141B; --tag:#1A212B; --ink:#E8EDF3; --muted:#93A0B2; --rule:#2B3442;
+    --good:#3FBF8A; --good-s:#11372A; --bad:#F06A5E; --bad-s:#3D1A17;
+    --dot:#E8EDF3; --focus:#7FA8FF;
+    color-scheme:dark;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -82,6 +89,9 @@ header.top .meta{color:var(--muted);font-size:.92rem;margin-top:8px}
 .pref input{width:52px;border:0;background:transparent;font:700 1.3rem var(--cond);text-align:right;padding:4px 2px}
 .pref input:focus{outline:2px solid var(--focus);border-radius:6px}
 .ghost{background:transparent;border:2px solid var(--rule);border-radius:10px;padding:8px 14px;cursor:pointer;color:var(--muted);font-weight:500;min-height:48px}
+.theme{display:inline-grid;place-items:center;width:48px;padding:0;color:var(--ink)}
+.theme .ico{width:22px;height:22px}
+.lock .theme{position:fixed;top:calc(14px + env(safe-area-inset-top));right:calc(14px + env(safe-area-inset-right))}
 
 .searchbar{position:sticky;top:0;z-index:5;background:var(--shelf);padding:10px 0 10px;margin:0 -2px}
 .search{position:relative}
@@ -102,18 +112,19 @@ section.cat{margin-top:30px}
 section.cat h2{font:800 2rem/1 var(--cond);margin:0 0 12px;display:flex;align-items:center;gap:10px}
 section.cat h2 .ico{width:1.05em;height:1.05em;stroke-width:1.7}
 section.cat h2 small{font:500 .95rem var(--body);color:var(--muted);align-self:flex-end;margin-bottom:.15em}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px}
 
 /* etiqueta de estantería */
 .tag{
-  display:flex;flex-direction:column;gap:12px;text-align:left;border:0;cursor:pointer;
+  display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:14px;align-items:start;text-align:left;border:0;cursor:pointer;
   background:var(--tag);border-radius:6px;padding:14px 14px 14px 16px;border-top:4px solid var(--ink);
 }
 .tag:active{transform:scale(.99)}
+.tag .info{display:flex;flex-direction:column;gap:4px;min-width:0}
 .tag .name{font:600 1.35rem/1.1 var(--cond)}
-.tag .row{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
-.tag .n{display:block;color:var(--muted);font-size:.85rem;margin-top:6px}
-.tag .asks{color:var(--muted);font-size:.85rem;margin-top:-4px}
+.tag .n{color:var(--muted);font-size:.85rem}
+.tag .buy{margin-top:10px}
+.tag .asks{color:var(--muted);font-size:.85rem;margin-top:4px}
 
 /* pegatina amarilla = precio de venta */
 .sticker{
@@ -127,7 +138,7 @@ section.cat h2 small{font:500 .95rem var(--body);color:var(--muted);align-self:f
 .sticker.ask::before{background:var(--sticker)}
 
 /* precio de compra, secundario */
-.buy{text-align:right}
+.buy{text-align:left}
 .buy .lbl{display:block;color:var(--muted);font-size:.8rem}
 .buy b{font:700 1.55rem/1.05 var(--cond)}
 .buy .roi{display:block;color:var(--muted);font-size:.8rem;margin-top:2px}
@@ -157,7 +168,7 @@ dialog::backdrop{background:rgba(8,12,18,.45)}
 .sheet .head p{margin:0;color:var(--muted);font-size:.92rem;display:flex;align-items:center;gap:6px}
 .sheet h2{font:800 2.2rem/1 var(--cond);margin:4px 0 0}
 .close{border:0;background:var(--shelf);border-radius:10px;width:44px;height:44px;flex:none;cursor:pointer;font-size:1.5rem;line-height:1}
-.pair{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin:22px 0 6px;flex-wrap:wrap}
+.pair{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin:22px 0 6px;flex-wrap:wrap-reverse}
 .pair .sticker{min-width:180px}
 .pair .sticker b{font-size:3.4rem}
 .pair .buy b{font-size:2rem}
@@ -210,6 +221,7 @@ dialog::backdrop{background:rgba(8,12,18,.45)}
 
 <!-- Pantalla de contraseña -->
 <main class="lock" id="lock" hidden>
+  <button class="ghost theme" id="themeBtnLock" type="button"></button>
   <form id="lockForm" autocomplete="on">
     <div class="brand"><svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#101828"/><g transform="rotate(-14 32 32)"><path d="M5 32 17 16H56a4 4 0 0 1 4 4v24a4 4 0 0 1-4 4H17Z" fill="#FFD000"/><circle cx="17.5" cy="32" r="3.2" fill="#101828"/><text x="40" y="42.5" text-anchor="middle" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="800" font-size="30" fill="#101828">€</text></g></svg><h1>Precios</h1></div>
     <p>Escribe la contraseña para ver las ventas.</p>
@@ -231,6 +243,7 @@ dialog::backdrop{background:rgba(8,12,18,.45)}
     <div class="tools">
       <div class="pref"><label for="gain">Ganar mínimo</label><input id="gain" class="num" type="number" inputmode="numeric" min="0" step="5"><span>€</span></div>
       <div class="pref"><label for="roi">ROI mínimo</label><input id="roi" class="num" type="number" inputmode="numeric" min="0" step="5"><span>%</span></div>
+      <button class="ghost theme" id="themeBtn" type="button"></button>
       <button class="ghost" id="lockBtn" type="button">Bloquear</button>
     </div>
   </header>
@@ -377,9 +390,8 @@ function tagHTML(p){
     ? `<span class="asks">${p.asks.length === 1 ? `Piden ${eur(p.askMin)}` : `Piden de ${eur(p.askMin)} a ${eur(p.askMax)}`}</span>` : "";
   const sub = hasSales ? range : `${p.asks.length} ${p.asks.length === 1 ? "precio pedido" : "precios pedidos"}, sin ventas`;
   return `<button class="tag" type="button" data-id="${p.id}">
-    <span class="name">${esc(p.name)}</span>
-    <span class="row"><span>${sticker}<span class="n">${sub}</span></span>${buyHTML(buyInfo(p.med))}</span>
-    ${asks}
+    <span class="info"><span class="name">${esc(p.name)}</span><span class="n">${sub}</span>${buyHTML(buyInfo(p.med))}${asks}</span>
+    ${sticker}
   </button>`;
 }
 function render(){
@@ -445,7 +457,7 @@ function openDetail(id){
   $("#sheet").innerHTML = `
     <div class="head"><div><p>${icon(p.cat_)}${esc(p.cat_ ? p.cat_.name : "")}</p><h2 id="dName">${esc(p.name)}</h2></div>
       <button class="close" type="button" id="dClose" aria-label="Cerrar">×</button></div>
-    <div class="pair">${sticker}${buyHTML(b)}</div>
+    <div class="pair">${buyHTML(b)}${sticker}</div>
     <p class="hint">${hint}</p>
     ${stripSVG(p)}
     ${p.n ? `<div class="calc">
@@ -505,6 +517,27 @@ function wire(){
   $("#detail").addEventListener("click", e => { if(e.target === $("#detail")) $("#detail").close(); });
   $("#lockBtn").onclick = () => { LS.del("precios.key"); location.reload(); };
 }
+
+/* ---------- tema claro / oscuro ---------- */
+const SUN = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg>';
+const MOON = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
+const sysDark = () => window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches;
+const curTheme = () => document.documentElement.dataset.theme || (sysDark() ? "dark" : "light");
+function paintTheme(){
+  const dark = curTheme() === "dark";
+  document.querySelectorAll("#themeBtn, #themeBtnLock").forEach(b => {
+    b.innerHTML = dark ? SUN : MOON;
+    b.setAttribute("aria-label", dark ? "Cambiar a modo claro" : "Cambiar a modo oscuro");
+    b.title = b.getAttribute("aria-label");
+  });
+  document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.content = dark ? "#0F141B" : "#DDE3EA");
+}
+function toggleTheme(){
+  const next = curTheme() === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = next; LS.set("precios.tema", next); paintTheme();
+}
+document.querySelectorAll("#themeBtn, #themeBtnLock").forEach(b => b.addEventListener("click", toggleTheme));
+paintTheme();
 
 function showApp(){
   build(); renderMeta(); renderChips(); render(); wire();
