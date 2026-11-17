@@ -98,7 +98,10 @@ header.top .meta{color:var(--muted);font-size:.92rem;margin-top:8px}
 .prefrow .in > span{width:1.2em}
 .prefrow input{width:84px;padding:10px 12px;border:2px solid var(--rule);border-radius:14px;background:var(--tag);font:700 1.4rem var(--cond);text-align:right}
 .prefrow input:focus{border-color:var(--ink);outline:none}
-.sheet .ghost.wide{width:100%;margin-top:22px}
+.sheet .ghost.wide{width:100%;margin-top:22px;display:flex;align-items:center;justify-content:center;gap:8px}
+.spin .ico{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin .ico{animation:none}.spin{opacity:.5}}
 .theme .ico{width:22px;height:22px}
 .lock .theme{position:fixed;top:calc(14px + env(safe-area-inset-top));right:calc(14px + env(safe-area-inset-right))}
 
@@ -287,9 +290,10 @@ dialog::backdrop{background:rgba(8,12,18,.45)}
     <div class="tools">
       <div class="pref"><label for="gain">Ganar mínimo</label><input id="gain" data-pref="gain" class="num" type="number" inputmode="numeric" min="0" step="5"><span>€</span></div>
       <div class="pref"><label for="roi">ROI mínimo</label><input id="roi" data-pref="roi" class="num" type="number" inputmode="numeric" min="0" step="5"><span>%</span></div>
+      <button class="ghost theme" id="refreshBtn" type="button" aria-label="Actualizar" title="Actualizar"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 3.5V8h-4.5"/></svg></button>
       <button class="ghost theme" id="prefsBtn" type="button" aria-label="Ajustes" title="Ajustes"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg></button>
       <button class="ghost theme" id="themeBtn" type="button"></button>
-      <button class="ghost" id="lockBtn" type="button">Bloquear</button>
+      <button class="ghost theme" id="lockBtn" type="button" aria-label="Bloquear" title="Bloquear"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v8"/><path d="M6.4 6.6a8 8 0 1 0 11.2 0"/></svg></button>
     </div>
   </header>
 
@@ -315,7 +319,7 @@ dialog::backdrop{background:rgba(8,12,18,.45)}
     <span class="in"><input id="gainM" data-pref="gain" class="num" type="number" inputmode="numeric" min="0" step="5"><span>€</span></span></div>
   <div class="prefrow"><label for="roiM">ROI mínimo<small>Lo que ganas respecto a lo que pagas</small></label>
     <span class="in"><input id="roiM" data-pref="roi" class="num" type="number" inputmode="numeric" min="0" step="5"><span>%</span></span></div>
-  <button class="ghost wide" id="lockBtnM" type="button">Bloquear la app</button>
+  <button class="ghost wide" id="lockBtnM" type="button"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v8"/><path d="M6.4 6.6a8 8 0 1 0 11.2 0"/></svg>Bloquear la app</button>
 </div></dialog>
 
 <script>
@@ -593,6 +597,12 @@ function wire(){
   if(window.matchMedia && matchMedia("(max-width:600px)").matches) $("#q").placeholder = "Busca: ps5 slim, iphone 13…";
   $("#detail").addEventListener("click", e => { if(e.target === $("#detail")) $("#detail").close(); });
   $("#lockBtn").onclick = () => { LS.del("precios.key"); location.reload(); };
+  $("#refreshBtn").onclick = async () => {
+    const b = $("#refreshBtn"); if(b.classList.contains("spin")) return;
+    b.classList.add("spin"); b.setAttribute("aria-label", "Actualizando…");
+    try{ const r = await navigator.serviceWorker?.getRegistration(); await r?.update(); }catch(e){}
+    location.reload();
+  };
 }
 
 /* ---------- tema claro / oscuro ---------- */
